@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KR Flower Market — Global Supply Chain</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+  :root {
+    --bg: #0a0d14;
+    --surface: #111520;
+    --surface2: #161b2a;
+    --border: rgba(255,255,255,0.07);
+    --text: #e8e4dc;
+    --muted: #6b7280;
+    --accent: #c8a96e;
+    --inbound: #4ade80;
+    --inbound-glow: rgba(74,222,128,0.3);
+    --outbound: #f87171;
+    --outbound-glow: rgba(248,113,113,0.3);
+    --hub: #c8a96e;
+    --hub-glow: rgba(200,169,110,0.4);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── Header ── */
+  header {
+    position: relative;
+    z-index: 1000;
+    padding: 14px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .header-left { display: flex; align-items: center; gap: 16px; }
+  .logo-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 12px var(--hub-glow);
+    animation: pulse-hub 2s ease-in-out infinite;
+  }
+  h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px; font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+  }
+  h1 span { color: var(--text); font-weight: 300; font-size: 14px; margin-left: 8px; }
+  .header-meta { font-size: 11px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+
+  /* ── Map ── */
+  #map { flex: 1; width: 100%; z-index: 1; }
+  .leaflet-container { background: #0a0d14 !important; }
+
+  /* ── Legend ── */
+  .legend {
+    position: absolute;
+    bottom: 36px; left: 24px;
+    z-index: 1000;
+    background: rgba(17,21,32,0.92);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    backdrop-filter: blur(12px);
+    min-width: 200px;
+  }
+  .legend-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 13px; font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .legend-row { display: flex; align-items: center; gap: 10px; margin-bottom: 9px; font-size: 11px; color: var(--text); }
+  .legend-line {
+    width: 32px; height: 2px; border-radius: 2px;
+    position: relative; overflow: visible;
+  }
+  .legend-line.inbound { background: var(--inbound); box-shadow: 0 0 6px var(--inbound-glow); }
+  .legend-line.outbound { background: var(--outbound); box-shadow: 0 0 6px var(--outbound-glow); }
+  .legend-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .legend-dot.hub { background: var(--accent); box-shadow: 0 0 8px var(--hub-glow); }
+  .legend-dot.node { background: #334155; border: 1px solid #475569; }
+
+  /* ── Stats bar ── */
+  .stats-bar {
+    position: absolute;
+    top: 72px; left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    display: flex; gap: 2px;
+    background: rgba(17,21,32,0.88);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+  }
+  .stat {
+    padding: 8px 20px;
+    text-align: center;
+    border-right: 1px solid var(--border);
+  }
+  .stat:last-child { border-right: none; }
+  .stat-val { font-size: 18px; font-family: 'Cormorant Garamond', serif; font-weight: 600; }
+  .stat-val.in { color: var(--inbound); }
+  .stat-val.out { color: var(--outbound); }
+  .stat-val.hub { color: var(--accent); }
+  .stat-label { font-size: 9px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 2px; }
+
+  /* ── Mode filter ── */
+  .filter-bar {
+    position: absolute;
+    top: 72px; right: 24px;
+    z-index: 1000;
+    display: flex; flex-direction: column; gap: 6px;
+    background: rgba(17,21,32,0.92);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    backdrop-filter: blur(12px);
+  }
+  .filter-title { font-size: 9px; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 4px; }
+  .filter-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 5px 12px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; color: var(--text);
+    cursor: pointer; transition: all 0.2s;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+  }
+  .filter-btn:hover, .filter-btn.active {
+    background: var(--accent);
+    color: var(--bg);
+    border-color: var(--accent);
+  }
+
+  /* ── Tooltip ── */
+  .custom-tooltip {
+    background: rgba(10,13,20,0.96) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 8px !important;
+    color: var(--text) !important;
+    font-family: 'DM Mono', monospace !important;
+    font-size: 11px !important;
+    padding: 10px 14px !important;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.6) !important;
+    line-height: 1.8 !important;
+    backdrop-filter: blur(8px);
+  }
+  .tooltip-name { font-family: 'Cormorant Garamond', serif; font-size: 15px; font-weight: 600; color: var(--accent); margin-bottom: 4px; }
+  .tooltip-row { display: flex; justify-content: space-between; gap: 16px; }
+  .tooltip-key { color: var(--muted); }
+  .tooltip-val { color: var(--text); font-weight: 400; }
+  .badge {
+    display: inline-block; padding: 1px 7px; border-radius: 4px;
+    font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 400;
+  }
+  .badge.inbound { background: rgba(74,222,128,0.15); color: var(--inbound); border: 1px solid rgba(74,222,128,0.3); }
+  .badge.outbound { background: rgba(248,113,113,0.15); color: var(--outbound); border: 1px solid rgba(248,113,113,0.3); }
+
+  /* ── Animations ── */
+  @keyframes pulse-hub {
+    0%,100% { box-shadow: 0 0 12px var(--hub-glow); transform: scale(1); }
+    50% { box-shadow: 0 0 24px var(--hub-glow); transform: scale(1.3); }
+  }
+  @keyframes flowDash { to { stroke-dashoffset: -200; } }
+  @keyframes flowPulse { 0%,100% { opacity:0.2; } 50% { opacity:1; } }
+
+  /* Leaflet overrides */
+  .leaflet-popup-content-wrapper {
+    background: rgba(10,13,20,0.96) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 10px !important;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.7) !important;
+    color: var(--text) !important;
+    font-family: 'DM Mono', monospace !important;
+  }
+  .leaflet-popup-tip { background: rgba(10,13,20,0.96) !important; }
+  .leaflet-popup-close-button { color: var(--muted) !important; font-size: 18px !important; }
+
+  /* SVG overlay canvas */
+  #flow-canvas {
+    position: absolute;
+    top: 0; left: 0;
+    pointer-events: none;
+    z-index: 500;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <div class="logo-dot"></div>
+    <div>
+      <h1>KR Flower Market <span>— Supply Chain Atlas</span></h1>
+    </div>
+  </div>
+  <div class="header-meta">Bangalore, Karnataka · 12.9656°N 77.5770°E</div>
+</header>
+
+<div id="map"></div>
+<canvas id="flow-canvas"></canvas>
+
+<!-- Stats -->
+<div class="stats-bar">
+  <div class="stat"><div class="stat-val in">10</div><div class="stat-label">Inbound</div></div>
+  <div class="stat"><div class="stat-val hub">1</div><div class="stat-label">Hub</div></div>
+  <div class="stat"><div class="stat-val out">7</div><div class="stat-label">Outbound</div></div>
+  <div class="stat"><div class="stat-val hub" style="font-size:14px">5 Nations</div><div class="stat-label">International</div></div>
+</div>
+
+<!-- Legend -->
+<div class="legend">
+  <div class="legend-title">Flow Legend</div>
+  <div class="legend-row"><div class="legend-line inbound"></div> Inbound Supply</div>
+  <div class="legend-row"><div class="legend-line outbound"></div> Outbound Distribution</div>
+  <div class="legend-row"><div class="legend-dot hub"></div> KR Market Hub</div>
+  <div class="legend-row" style="margin-top:10px; border-top:1px solid var(--border); padding-top:10px;">
+    <div style="font-size:10px; color:var(--muted);">Line thickness = route distance<br>✈ Air &nbsp;·&nbsp; 🚚 Road</div>
+  </div>
+</div>
+
+<!-- Filters -->
+<div class="filter-bar">
+  <div class="filter-title">Filter</div>
+  <button class="filter-btn active" onclick="setFilter('all', this)">All Routes</button>
+  <button class="filter-btn" onclick="setFilter('inbound', this)">Inbound Only</button>
+  <button class="filter-btn" onclick="setFilter('outbound', this)">Outbound Only</button>
+  <button class="filter-btn" onclick="setFilter('air', this)">✈ Air Only</button>
+  <button class="filter-btn" onclick="setFilter('road', this)">🚚 Road Only</button>
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────
+const hub = { name: "KR Flower Market", lat: 12.9656, lon: 77.577 };
+
+const flows = [
+  { name:"Anekal", lat:12.7091, lon:77.6992, type:"inbound", mode:"road", flower:"Roses, Marigolds" },
+  { name:"Hoskote", lat:13.0693, lon:77.7982, type:"inbound", mode:"road", flower:"Roses, Marigolds" },
+  { name:"Electronic City", lat:12.8452, lon:77.6602, type:"inbound", mode:"road", flower:"Mixed flowers" },
+  { name:"Ooty", lat:11.4102, lon:76.695, type:"inbound", mode:"road", flower:"Mixed flowers" },
+  { name:"Hosur", lat:12.7409, lon:77.8253, type:"inbound", mode:"road", flower:"Mixed flowers" },
+  { name:"Madurai", lat:9.9252, lon:78.1198, type:"inbound", mode:"road", flower:"Mixed flowers" },
+  { name:"Telangana", lat:18.1124, lon:79.0193, type:"inbound", mode:"road", flower:"Mixed flowers" },
+  { name:"Thailand", lat:15.87, lon:100.9925, type:"inbound", mode:"air", flower:"Exotic flowers" },
+  { name:"Australia", lat:-33.8688, lon:151.2093, type:"inbound", mode:"air", flower:"Orchids, Tulips" },
+  { name:"Netherlands", lat:52.1326, lon:5.2913, type:"inbound", mode:"air", flower:"Exotic flowers" },
+  { name:"Wilson Garden", lat:12.9482, lon:77.5972, type:"outbound", mode:"road", flower:"Unsold/surplus" },
+  { name:"JP Nagar", lat:12.9063, lon:77.5857, type:"outbound", mode:"road", flower:"Unsold/surplus" },
+  { name:"KR Puram", lat:13.017, lon:77.7044, type:"outbound", mode:"road", flower:"Unsold/surplus" },
+  { name:"Delhi", lat:28.7041, lon:77.1025, type:"outbound", mode:"air", flower:"Premium/exotic" },
+  { name:"Mumbai", lat:19.076, lon:72.8777, type:"outbound", mode:"air", flower:"Premium/exotic" },
+  { name:"Kolkata", lat:22.5726, lon:88.3639, type:"outbound", mode:"air", flower:"Premium/exotic" },
+  { name:"Guwahati", lat:26.1158, lon:91.7086, type:"outbound", mode:"air", flower:"Premium/exotic" }
+];
+
+// ── COLORS & HELPERS ──────────────────────────────────
+const C_IN  = '#4ade80';
+const C_OUT = '#f87171';
+const C_HUB = '#c8a96e';
+let activeFilter = 'all';
+let animFrame;
+
+// ── MAP INIT ──────────────────────────────────────────
+const map = L.map('map', {
+  center: [20, 80],
+  zoom: 4,
+  zoomControl: false,
+  attributionControl: false
+});
+
+// Dark tile layer
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+  maxZoom: 19,
+  attribution: '© OpenStreetMap © CARTO'
+}).addTo(map);
+
+L.control.zoom({ position: 'bottomright' }).addTo(map);
+L.control.attribution({ position: 'bottomright', prefix: '' }).addTo(map);
+
+// ── MARKER ICONS ──────────────────────────────────────
+function makeIcon(color, glow, size=12, emoji='') {
+  const s = size;
+  return L.divIcon({
+    className: '',
+    html: `<div style="
+      width:${s}px;height:${s}px;border-radius:50%;
+      background:${color};
+      box-shadow:0 0 ${s*1.5}px ${glow};
+      border:2px solid rgba(255,255,255,0.15);
+      position:relative;
+      display:flex;align-items:center;justify-content:center;
+      font-size:${s*0.55}px;
+    ">${emoji}</div>`,
+    iconSize: [s, s],
+    iconAnchor: [s/2, s/2]
+  });
+}
+
+const hubIcon = L.divIcon({
+  className: '',
+  html: `<div style="position:relative;width:28px;height:28px;">
+    <div style="
+      width:28px;height:28px;border-radius:50%;
+      background:${C_HUB};
+      box-shadow:0 0 20px rgba(200,169,110,0.7), 0 0 40px rgba(200,169,110,0.3);
+      border:2px solid rgba(255,255,255,0.3);
+      animation:pulse-hub-css 2s ease-in-out infinite;
+      display:flex;align-items:center;justify-content:center;
+      font-size:14px;
+    ">🌸</div>
+  </div>
+  <style>@keyframes pulse-hub-css{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.15);opacity:0.9}}</style>`,
+  iconSize: [28, 28],
+  iconAnchor: [14, 14]
+});
+
+// ── HUB MARKER ───────────────────────────────────────
+const hubMarker = L.marker([hub.lat, hub.lon], { icon: hubIcon, zIndexOffset: 9999 }).addTo(map);
+hubMarker.bindPopup(`
+  <div style="font-family:'Cormorant Garamond',serif;font-size:16px;color:#c8a96e;font-weight:600;margin-bottom:6px;">🌸 ${hub.name}</div>
+  <div style="font-size:10px;color:#6b7280;letter-spacing:0.1em;text-transform:uppercase;">Central Hub · Bangalore, Karnataka</div>
+  <div style="margin-top:8px;font-family:'DM Mono',monospace;font-size:10px;color:#e8e4dc;">
+    <div>10 inbound sources</div>
+    <div>7 outbound destinations</div>
+    <div>5 international routes</div>
+  </div>
+`);
+
+// ── DISTANCE UTIL ────────────────────────────────────
+function haversine(lat1,lon1,lat2,lon2){
+  const R=6371, dLat=(lat2-lat1)*Math.PI/180, dLon=(lon2-lon1)*Math.PI/180;
+  const a=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
+
+// ── FLOW LINES ───────────────────────────────────────
+const flowLayers = [];
+
+function haversineGreatCirclePoints(lat1,lon1,lat2,lon2,n=80){
+  const toR=Math.PI/180, toDeg=180/Math.PI;
+  const φ1=lat1*toR,λ1=lon1*toR,φ2=lat2*toR,λ2=lon2*toR;
+  const points=[];
+  for(let i=0;i<=n;i++){
+    const f=i/n;
+    const A=Math.sin((1-f)*Math.PI)/Math.sin(Math.PI);  // placeholder
+    // real slerp
+    const d=2*Math.asin(Math.sqrt(Math.sin((φ2-φ1)/2)**2+Math.cos(φ1)*Math.cos(φ2)*Math.sin((λ2-λ1)/2)**2));
+    if(d<0.001){ points.push([lat1,lon1]); continue; }
+    const a=Math.sin((1-f)*d)/Math.sin(d), b=Math.sin(f*d)/Math.sin(d);
+    const x=a*Math.cos(φ1)*Math.cos(λ1)+b*Math.cos(φ2)*Math.cos(λ2);
+    const y=a*Math.cos(φ1)*Math.sin(λ1)+b*Math.cos(φ2)*Math.sin(λ2);
+    const z=a*Math.sin(φ1)+b*Math.sin(φ2);
+    points.push([Math.atan2(z,Math.sqrt(x*x+y*y))*toDeg, Math.atan2(y,x)*toDeg]);
+  }
+  return points;
+}
+
+function getLineWeight(dist){
+  if(dist < 100) return 3.5;
+  if(dist < 500) return 2.5;
+  if(dist < 2000) return 2;
+  return 1.5;
+}
+function getOpacity(dist){
+  return dist < 300 ? 0.9 : dist < 2000 ? 0.75 : 0.6;
+}
+
+flows.forEach((f, i) => {
+  const dist = haversine(hub.lat, hub.lon, f.lat, f.lon);
+  const isAir = f.mode === 'air';
+  const isIn = f.type === 'inbound';
+  const color = isIn ? C_IN : C_OUT;
+  const weight = getLineWeight(dist);
+  const opacity = getOpacity(dist);
+
+  // Points: for air use great circle, for road use bezier-like midpoint
+  let points;
+  if(isAir) {
+    points = haversineGreatCirclePoints(hub.lat, hub.lon, f.lat, f.lon, 60);
+    if(!isIn) points.reverse();
+  } else {
+    // Simple 3-point curve
+    const mid = [(hub.lat+f.lat)/2, (hub.lon+f.lon)/2];
+    // Offset perpendicularly
+    const dLat = f.lat - hub.lat, dLon = f.lon - hub.lon;
+    const len = Math.sqrt(dLat*dLat+dLon*dLon);
+    const perp = [-dLon/len*0.3, dLat/len*0.3];
+    const ctrl = [mid[0]+perp[0], mid[1]+perp[1]];
+    points = [];
+    for(let t=0;t<=1;t+=0.02){
+      const t2=t*t,mt=1-t,mt2=mt*mt;
+      const startLat = isIn ? f.lat : hub.lat, startLon = isIn ? f.lon : hub.lon;
+      const endLat = isIn ? hub.lat : f.lat, endLon = isIn ? hub.lon : f.lon;
+      points.push([
+        mt2*startLat+2*mt*t*ctrl[0]+t2*endLat,
+        mt2*startLon+2*mt*t*ctrl[1]+t2*endLon
+      ]);
+    }
+  }
+
+  // Glow / background line
+  const glowLine = L.polyline(points, {
+    color: color, weight: weight+3, opacity: 0.12,
+    smoothFactor: 1, interactive: false,
+    dashArray: isAir ? '8,6' : null
+  });
+
+  // Main line
+  const mainLine = L.polyline(points, {
+    color: color, weight: weight, opacity: opacity,
+    smoothFactor: 1, interactive: false,
+    dashArray: isAir ? '12,8' : null
+  });
+
+  // Animated dashes
+  const animLine = L.polyline(points, {
+    color: color, weight: weight+0.5, opacity: 0.7,
+    smoothFactor: 1, interactive: false,
+    dashArray: '10,20',
+    dashOffset: '0'
+  });
+
+  // Invisible thick line for tooltip interaction
+  const hitLine = L.polyline(points, {
+    color: 'transparent', weight: 18, opacity: 0, interactive: true
+  });
+
+  const modeEmoji = f.mode === 'air' ? '✈' : '🚚';
+  const typeLabel = isIn ? 'Inbound' : 'Outbound';
+  const badgeClass = isIn ? 'inbound' : 'outbound';
+  hitLine.bindTooltip(`
+    <div class="tooltip-name">${f.name}</div>
+    <div class="tooltip-row"><span class="tooltip-key">Type</span><span class="badge ${badgeClass}">${typeLabel}</span></div>
+    <div class="tooltip-row"><span class="tooltip-key">Mode</span><span class="tooltip-val">${modeEmoji} ${f.mode.charAt(0).toUpperCase()+f.mode.slice(1)}</span></div>
+    <div class="tooltip-row"><span class="tooltip-key">Flowers</span><span class="tooltip-val">${f.flower}</span></div>
+    <div class="tooltip-row"><span class="tooltip-key">Distance</span><span class="tooltip-val">${Math.round(dist)} km</span></div>
+  `, { className: 'custom-tooltip', sticky: true });
+
+  // Node marker
+  const markerColor = isIn ? C_IN : C_OUT;
+  const markerGlow = isIn ? 'rgba(74,222,128,0.4)' : 'rgba(248,113,113,0.4)';
+  const mSize = dist < 300 ? 9 : dist < 2000 ? 8 : 7;
+  const nodeIcon = makeIcon(markerColor, markerGlow, mSize, modeEmoji);
+  const marker = L.marker([f.lat, f.lon], { icon: nodeIcon });
+  marker.bindPopup(`
+    <div style="font-family:'Cormorant Garamond',serif;font-size:15px;color:${markerColor};font-weight:600;margin-bottom:4px;">${modeEmoji} ${f.name}</div>
+    <div style="font-size:10px;color:#6b7280;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:8px;">${typeLabel} · ${f.mode}</div>
+    <div style="font-family:'DM Mono',monospace;font-size:10px;color:#e8e4dc;line-height:1.8;">
+      <div><span style="color:#6b7280;">Flowers: </span>${f.flower}</div>
+      <div><span style="color:#6b7280;">Distance: </span>${Math.round(dist)} km</div>
+    </div>
+  `);
+
+  const layer = { glowLine, mainLine, animLine, hitLine, marker, flow: f, animOffset: Math.random()*200 };
+  flowLayers.push(layer);
+});
+
+// ── RENDER LAYERS ────────────────────────────────────
+function renderLayers() {
+  // Remove all
+  flowLayers.forEach(l => {
+    [l.glowLine, l.mainLine, l.animLine, l.hitLine, l.marker].forEach(x => {
+      if(map.hasLayer(x)) map.removeLayer(x);
+    });
+  });
+
+  flowLayers.forEach(l => {
+    const f = l.flow;
+    let show = true;
+    if(activeFilter === 'inbound' && f.type !== 'inbound') show = false;
+    if(activeFilter === 'outbound' && f.type !== 'outbound') show = false;
+    if(activeFilter === 'air' && f.mode !== 'air') show = false;
+    if(activeFilter === 'road' && f.mode !== 'road') show = false;
+    if(show) {
+      l.glowLine.addTo(map);
+      l.mainLine.addTo(map);
+      l.animLine.addTo(map);
+      l.hitLine.addTo(map);
+      l.marker.addTo(map);
+    }
+  });
+  hubMarker.addTo(map); // Always on top
+}
+
+renderLayers();
+
+// ── ANIMATION LOOP ───────────────────────────────────
+let tick = 0;
+function animate() {
+  tick++;
+  flowLayers.forEach((l, i) => {
+    if(!map.hasLayer(l.animLine)) return;
+    const speed = l.flow.mode === 'air' ? 1.8 : 0.9;
+    const dir = l.flow.type === 'inbound' ? -1 : 1;
+    const offset = (tick * speed * dir + l.animOffset) % 200;
+    // Update dashOffset via internal SVG
+    const el = l.animLine._path;
+    if(el) el.style.strokeDashoffset = offset;
+  });
+  animFrame = requestAnimationFrame(animate);
+}
+animate();
+
+// ── FILTER ───────────────────────────────────────────
+function setFilter(f, btn) {
+  activeFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderLayers();
+}
+
+// ── CLUSTER NEARBY NODES (visual offset) ─────────────
+// Slightly offset overlapping markers in Bangalore area
+const bgCluster = [
+  { name:"Wilson Garden", offset:[-0.003, 0.002] },
+  { name:"JP Nagar", offset:[-0.005, -0.003] },
+  { name:"KR Puram", offset:[0.004, 0.005] }
+];
+bgCluster.forEach(c => {
+  const l = flowLayers.find(x => x.flow.name === c.name);
+  if(l) {
+    const ll = l.marker.getLatLng();
+    l.marker.setLatLng([ll.lat + c.offset[0], ll.lng + c.offset[1]]);
+  }
+});
+
+// ── FIT BOUNDS ───────────────────────────────────────
+const allPoints = [[hub.lat, hub.lon], ...flows.map(f=>[f.lat, f.lon])];
+map.fitBounds(allPoints, { padding: [60,60] });
+</script>
+</body>
+</html>

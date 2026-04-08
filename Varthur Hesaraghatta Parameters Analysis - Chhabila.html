@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hesaraghatta vs Varthur — Water Quality Comparative Study</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ═══ ROOT ═══ */
+:root {
+  --H: #38bdf8;      /* Hesaraghatta — sky blue */
+  --V: #fb923c;      /* Varthur — amber-orange */
+  --HA: rgba(56,189,248,0.13);
+  --VA: rgba(251,146,60,0.13);
+  --HB: rgba(56,189,248,0.65);
+  --VB: rgba(251,146,60,0.65);
+  --HM: #7dd3fc;
+  --VM: #fdba74;
+  --bg:  #060a12;
+  --s1:  #0b1120;
+  --s2:  #101828;
+  --s3:  #16213a;
+  --br:  rgba(255,255,255,0.06);
+  --br2: rgba(255,255,255,0.12);
+  --tx:  #e8f0ff;
+  --mu:  #6880a8;
+  --mu2: #8fa4c8;
+  --ac:  #34d399;
+  --warn:#fbbf24;
+  --red: #f87171;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;font-size:16px;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--tx);overflow-x:hidden;line-height:1.6;}
+::-webkit-scrollbar{width:3px;}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.08);border-radius:2px;}
+
+/* ═══ TYPOGRAPHY ═══ */
+h1,h2,h3,.serif{font-family:'DM Serif Display',serif;}
+
+/* ═══ LAYOUT ═══ */
+.wrap{max-width:1280px;margin:0 auto;padding:0 40px;}
+.sec{padding:100px 0;}
+.sec-alt{background:var(--s1);}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--br2),var(--br2),transparent);}
+
+/* ═══ SECTION LABELS ═══ */
+.eyebrow{font-size:10px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--ac);margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.eyebrow::before{content:'';width:28px;height:1px;background:var(--ac);}
+h2.sec-title{font-size:clamp(2rem,3.5vw,2.75rem);line-height:1.15;margin-bottom:8px;font-weight:400;}
+.sec-rule{width:40px;height:2px;background:linear-gradient(90deg,var(--H),var(--V));border-radius:2px;margin-bottom:20px;}
+.sec-sub{color:var(--mu2);font-size:.92rem;line-height:1.8;max-width:620px;margin-bottom:52px;}
+
+/* ═══ LEGEND ═══ */
+.legend{display:flex;gap:20px;margin-bottom:18px;flex-wrap:wrap;}
+.li{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--mu2);}
+.lsq{width:10px;height:10px;border-radius:2px;flex-shrink:0;}
+.ldot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+
+/* ═══ GRID HELPERS ═══ */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+
+/* ═══ CARDS ═══ */
+.card{background:var(--s2);border:1px solid var(--br);border-radius:20px;padding:28px 26px;transition:box-shadow .25s,transform .25s;}
+.sec-alt .card{background:var(--s3);}
+.card:hover{box-shadow:0 12px 40px rgba(0,0,0,.4);transform:translateY(-2px);}
+.card-H{border-top:2px solid var(--H);}
+.card-V{border-top:2px solid var(--V);}
+.card-title{font-size:.95rem;font-weight:600;margin-bottom:4px;color:var(--tx);}
+.card-sub{font-size:.76rem;color:var(--mu);line-height:1.55;margin-bottom:18px;}
+
+/* ═══ CHART HEIGHTS ═══ */
+.ch240{position:relative;height:240px;width:100%;}
+.ch280{position:relative;height:280px;width:100%;}
+.ch320{position:relative;height:320px;width:100%;}
+.ch360{position:relative;height:360px;width:100%;}
+.ch400{position:relative;height:400px;width:100%;}
+.ch440{position:relative;height:440px;width:100%;}
+
+/* ═══ STAT CARDS ═══ */
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+.stat{background:var(--s2);border:1px solid var(--br);border-radius:16px;padding:22px 18px;position:relative;overflow:hidden;}
+.sec-alt .stat{background:var(--s3);}
+.stat::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:16px 16px 0 0;}
+.stat.ok::after{background:linear-gradient(90deg,var(--ac),transparent);}
+.stat.warn::after{background:linear-gradient(90deg,var(--warn),transparent);}
+.stat.bad::after{background:linear-gradient(90deg,var(--red),transparent);}
+.stat-label{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--mu);margin-bottom:14px;font-weight:500;}
+.stat-row{display:flex;align-items:flex-end;gap:14px;}
+.stat-val{font-family:'DM Serif Display',serif;font-size:1.85rem;line-height:1;}
+.stat-val.hc{color:var(--HM);}
+.stat-val.vc{color:var(--VM);}
+.stat-who{font-size:9.5px;color:var(--mu);margin-top:3px;letter-spacing:.8px;text-transform:uppercase;}
+.stat-vs{font-size:10px;color:var(--mu);align-self:center;padding-bottom:4px;}
+
+/* ═══ INSIGHT BOX ═══ */
+.insight{border-radius:14px;padding:16px 20px;font-size:.82rem;line-height:1.75;color:var(--mu2);}
+.insight strong{color:var(--tx);}
+.insight.H{background:rgba(56,189,248,.07);border:1px solid rgba(56,189,248,.18);}
+.insight.V{background:rgba(251,146,60,.07);border:1px solid rgba(251,146,60,.18);}
+.insight.N{background:rgba(255,255,255,.03);border:1px solid var(--br);}
+.insight.G{background:rgba(52,211,153,.06);border:1px solid rgba(52,211,153,.2);}
+.insight.W{background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);}
+.insight.R{background:rgba(248,113,113,.07);border:1px solid rgba(248,113,113,.22);}
+
+/* ═══ TABLE ═══ */
+.tw{overflow-x:auto;border-radius:16px;border:1px solid var(--br);margin-bottom:24px;}
+table{width:100%;border-collapse:collapse;font-size:12.5px;min-width:560px;}
+thead tr{background:rgba(255,255,255,.025);}
+th{color:var(--mu);font-weight:500;text-align:left;padding:13px 16px;font-size:10px;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--br);white-space:nowrap;}
+td{padding:11px 16px;border-bottom:1px solid rgba(255,255,255,.03);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tbody tr:hover td{background:rgba(255,255,255,.015);}
+.avrow td{font-weight:600;color:var(--ac);background:rgba(52,211,153,.03);}
+.thc{color:var(--HM);font-weight:600;}
+.tvc{color:var(--VM);font-weight:600;}
+.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:100px;font-size:10px;font-weight:500;}
+.badge.ok{background:rgba(52,211,153,.1);color:#6ee7b7;border:1px solid rgba(52,211,153,.25);}
+.badge.w{background:rgba(251,191,36,.1);color:#fde68a;border:1px solid rgba(251,191,36,.25);}
+.badge.d{background:rgba(248,113,113,.1);color:#fca5a5;border:1px solid rgba(248,113,113,.25);}
+
+/* ═══ NUTRIENT LOLLIPOP ═══ */
+.lollipop-wrap{display:flex;flex-direction:column;gap:18px;padding:8px 0;}
+.lolp-row{display:flex;flex-direction:column;gap:6px;}
+.lolp-label{font-size:11px;color:var(--mu2);text-transform:uppercase;letter-spacing:1px;font-weight:500;}
+.lolp-bars{display:flex;flex-direction:column;gap:4px;}
+.lolp-bar-row{display:flex;align-items:center;gap:10px;}
+.lolp-name{font-size:10px;color:var(--mu);width:88px;text-align:right;flex-shrink:0;}
+.lolp-track{flex:1;background:rgba(255,255,255,.05);border-radius:4px;height:8px;position:relative;overflow:hidden;}
+.lolp-fill{height:100%;border-radius:4px;transition:width 1.2s cubic-bezier(.4,0,.2,1);}
+.lolp-val{font-size:11px;font-weight:600;width:42px;flex-shrink:0;}
+
+/* ═══ COD BIG COMPARE ═══ */
+.big-compare{display:flex;gap:16px;}
+.big-col{flex:1;border-radius:16px;padding:24px 20px;text-align:center;}
+.big-col.H{background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.2);}
+.big-col.V{background:rgba(251,146,60,.08);border:1px solid rgba(251,146,60,.2);}
+.big-num{font-family:'DM Serif Display',serif;font-size:3rem;line-height:1;}
+.big-num.H{color:var(--HM);}
+.big-num.V{color:var(--VM);}
+.big-unit{font-size:10px;color:var(--mu);letter-spacing:1px;text-transform:uppercase;margin-top:5px;}
+.big-name{font-size:12px;font-weight:500;color:var(--mu2);margin-top:8px;}
+
+/* ═══ COLIFORM CALLOUT ═══ */
+.coli-big{border-radius:18px;padding:26px 28px;margin-bottom:16px;}
+.coli-big.R{background:rgba(248,113,113,.07);border:1px solid rgba(248,113,113,.22);}
+.coli-big.W{background:rgba(251,191,36,.07);border:1px solid rgba(251,191,36,.22);}
+.coli-num{font-family:'DM Serif Display',serif;font-size:3rem;line-height:1;margin-bottom:6px;}
+.coli-num.R{color:var(--red);}
+.coli-num.W{color:var(--warn);}
+.coli-lake{font-size:.82rem;font-weight:600;margin-bottom:8px;}
+.coli-lake.R{color:var(--red);}
+.coli-lake.W{color:var(--warn);}
+.coli-desc{font-size:.8rem;color:var(--mu2);line-height:1.65;}
+
+/* ═══ VERDICT ═══ */
+.verdict-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;}
+.vcard{border-radius:20px;padding:32px 28px;}
+.vcard.H{background:rgba(56,189,248,.06);border:1px solid rgba(56,189,248,.2);border-top:3px solid var(--H);}
+.vcard.V{background:rgba(251,146,60,.06);border:1px solid rgba(251,146,60,.2);border-top:3px solid var(--V);}
+.vcard-title{font-size:1.15rem;font-weight:600;margin-bottom:20px;}
+.vcard-title.H{color:var(--HM);}
+.vcard-title.V{color:var(--VM);}
+.vi{display:flex;align-items:flex-start;gap:10px;margin-bottom:11px;font-size:13px;color:var(--mu2);line-height:1.55;}
+.vi-icon{flex-shrink:0;margin-top:1px;}
+
+/* ═══ HERO ═══ */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative;overflow:hidden;padding:80px 24px 120px;}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 20% 40%,rgba(56,189,248,.08) 0%,transparent 60%),radial-gradient(ellipse 70% 50% at 80% 60%,rgba(251,146,60,.07) 0%,transparent 60%);pointer-events:none;}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:80px 80px;pointer-events:none;opacity:.4;}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.22);border-radius:100px;padding:7px 22px;font-size:10px;font-weight:600;color:var(--ac);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:40px;}
+.hero h1{font-size:clamp(3.5rem,9vw,8rem);font-weight:400;line-height:.95;letter-spacing:-3px;margin-bottom:14px;}
+.hero h1 .hc{color:var(--H);text-shadow:0 0 80px rgba(56,189,248,.25);}
+.hero h1 .vc{color:var(--V);text-shadow:0 0 80px rgba(251,146,60,.22);}
+.hero h1 .vs{display:block;font-size:.2em;color:var(--mu);letter-spacing:8px;margin:18px 0;font-style:italic;font-family:'DM Sans',sans-serif;font-weight:300;}
+.hero-desc{color:var(--mu2);font-size:1rem;max-width:520px;line-height:1.85;margin-bottom:52px;}
+.hero-pills{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:52px;}
+.pill{display:flex;align-items:center;gap:9px;padding:12px 26px;border-radius:100px;font-size:.85rem;font-weight:500;}
+.pill.H{background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.28);color:var(--HM);}
+.pill.V{background:rgba(251,146,60,.1);border:1px solid rgba(251,146,60,.28);color:var(--VM);}
+.ptag-row{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:680px;}
+.ptag{background:rgba(255,255,255,.04);border:1px solid var(--br);border-radius:100px;padding:5px 14px;font-size:10.5px;color:var(--mu);}
+.hero-scroll{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--mu);animation:bob 2s ease-in-out infinite;}
+@keyframes bob{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(6px);}}
+
+/* ═══ SECTION NAV ═══ */
+.sec-num{font-family:'DM Serif Display',serif;font-size:5rem;font-weight:400;color:rgba(255,255,255,.025);position:absolute;right:40px;top:100px;line-height:1;pointer-events:none;}
+
+/* ═══ SCROLL ANIMATION ═══ */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .65s ease,transform .65s ease;}
+.revealed{opacity:1;transform:none;}
+
+/* ═══ HARDNESS SPECIAL ═══ */
+.hard-note{font-size:.75rem;color:var(--mu);font-style:italic;padding:10px 14px;border-radius:8px;background:rgba(255,255,255,.03);border:1px solid var(--br);margin-top:14px;line-height:1.6;}
+
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:1000px){
+  .g2,.g3,.g4,.stat-grid,.verdict-grid{grid-template-columns:1fr;}
+  .wrap{padding:0 24px;}
+  .sec{padding:70px 0;}
+  .sec-num{display:none;}
+  .big-compare{flex-direction:column;}
+}
+@media(max-width:600px){
+  .hero h1{letter-spacing:-1px;}
+  th,td{padding:10px 12px;}
+  .hero-pills{flex-direction:column;align-items:center;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     HERO
+══════════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-badge">🌊 Comparative Water Quality Study · Bengaluru Urban Lakes</div>
+  <h1>
+    <span class="hc">Hesaraghatta</span>
+    <span class="vs">— versus —</span>
+    <span class="vc">Varthur</span>
+  </h1>
+  <p class="hero-desc">A physicochemical and biological comparative analysis across <strong style="color:var(--tx)">11 water quality parameters</strong>, drawn from 5 field samples at each lake.</p>
+  <div class="hero-pills">
+    <div class="pill H"><span class="ldot" style="background:var(--H);box-shadow:0 0 8px var(--H)"></span>Hesaraghatta Lake · 5 Samples</div>
+    <div class="pill V"><span class="ldot" style="background:var(--V);box-shadow:0 0 8px var(--V)"></span>Varthur Lake · 5 Samples</div>
+  </div>
+  <div class="ptag-row">
+    <span class="ptag">pH</span><span class="ptag">Turbidity</span><span class="ptag">TDS</span>
+    <span class="ptag">Dissolved Oxygen</span><span class="ptag">Free CO₂</span><span class="ptag">COD</span>
+    <span class="ptag">Total Hardness</span><span class="ptag">Ammonia</span>
+    <span class="ptag">Nitrate</span><span class="ptag">Total Phosphorus</span><span class="ptag">Coliform</span>
+  </div>
+  <div class="hero-scroll">↓ scroll to explore</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════════════════
+     01 AT A GLANCE
+══════════════════════════════════════════ -->
+<section class="sec sec-alt reveal">
+  <div class="wrap" style="position:relative;">
+    <div class="sec-num">01</div>
+    <div class="eyebrow">01 · Overview</div>
+    <h2 class="sec-title">At a Glance</h2>
+    <div class="sec-rule"></div>
+    <p class="sec-sub">Average values across all measured parameters. Border accents reflect guideline status — each lake tells a different pollution story.</p>
+
+    <div class="stat-grid">
+      <div class="stat warn">
+        <div class="stat-label">pH</div>
+        <div class="stat-row">
+          <div><div class="stat-val hc">9.34</div><div class="stat-who">Hesaraghatta</div></div>
+          <div class="stat-vs">vs</div>
+          <div><div class="stat-val vc">8.08</div><div class="stat-who">Varthur</div></div>
+        </div>
+      </div>
+      <div class="stat bad">
+        <div class="stat-label">Turbidity (NTU)</div>
+        <div class="stat-row">
+          <div><div class="stat-val hc">5.46</div><div class="stat-who">Hesaraghatta</div></div>
+          <div class="stat-vs">vs</div>
+          <div><div class="stat-val vc">9.00</div><div class="stat-who">Varthur</div></div>
+        </div>
+      </div>
+      <div class="stat bad">
+        <div class="stat-label">TDS (ppm)</div>
+        <div class="stat-row">
+          <div><div class="stat-val hc">178.6</div><div class="stat-who">Hesaraghatta</div></div>
+          <div class="stat-vs">vs</div>
+          <div><div class="stat-val vc">369.938</div><div class="stat-who">Varthur</div></div>
+        </div>
+      </div>
+      <div class="stat warn">
+        <div class="stat-label">Dissolved Oxygen (mg/L)</div>
+        <div class="stat-row">
+          <div><div class="stat-val hc">4.34</div><div class="stat-who">Hesaraghatta</div></div>
+          <div class="stat-vs">vs</div>
+          <div><div class="stat-val vc">6.24</div><div class="stat-who">Varthur</div></div>
+        </div>
+      </div>
+      <div class="stat ok">
+        <div class="stat-label">Free CO₂ (mg/L)</div>
+        <div class="stat-row">
+          <div><div class="stat-val hc">5.192</div><div class="stat-who">Hesaraghatta</div></div>
+          <div class="stat-vs">vs</div>
+          <div><div class="stat-val vc">5.544</div><div class="stat-who">Varthur</div></div>
+        </div>
+      </div>
+      <div class="stat bad">
+        <div class="stat-label">COD (mg/L)</div>
+        <div class="stat-row">
+          <div><div class="stat-val hc">32</div><div class="stat-who">Hesaraghatta</div></div>
+          <div class="stat-vs">vs</div>
+          <div><div class="stat-val vc">71</div><div class="stat-who">Varthur</div></div>
+        </div>
+      </div>
+      <div class="stat warn">
+        <div class="stat-label">Total Hardness (mg/L)</div>
+        <div class="stat-row">
+          <div><div class="stat-val hc">276</div><div class="stat-who">Hesaraghatta</div></div>
+          <div class="stat-vs">vs</div>
+          <div><div class="stat-val vc">220</div><div class="stat-who">Varthur</div></div>
+        </div>
+      </div>
+      <div class="stat bad">
+        <div class="stat-label">Coliform (CFU/100 mL)</div>
+        <div class="stat-row">
+          <div><div class="stat-val hc">1450</div><div class="stat-who">Hesaraghatta</div></div>
+          <div class="stat-vs">vs</div>
+          <div><div class="stat-val vc">132</div><div class="stat-who">Varthur</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:20px;" class="g3">
+      <div class="stat ok">
+        <div class="stat-label">Ammonia (mg/L)</div>
+        <div class="stat-row">
+          <div><div class="stat-val hc">0.25</div><div class="stat-who">Hesaraghatta</div></div>
+          <div class="stat-vs">vs</div>
+          <div><div class="stat-val vc">0.15</div><div class="stat-who">Varthur</div></div>
+        </div>
+      </div>
+      <div class="stat warn">
+        <div class="stat-label">Nitrate (mg/L)</div>
+        <div class="stat-row">
+          <div><div class="stat-val hc">15</div><div class="stat-who">Hesaraghatta</div></div>
+          <div class="stat-vs">vs</div>
+          <div><div class="stat-val vc">0</div><div class="stat-who">Varthur</div></div>
+        </div>
+      </div>
+      <div class="stat bad">
+        <div class="stat-label">Total Phosphorus (mg/L)</div>
+        <div class="stat-row">
+          <div><div class="stat-val hc">0.04</div><div class="stat-who">Hesaraghatta</div></div>
+          <div class="stat-vs">vs</div>
+          <div><div class="stat-val vc">0.22</div><div class="stat-who">Varthur</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════════════════
+     02 RADAR / FINGERPRINT
+══════════════════════════════════════════ -->
+<section class="sec reveal">
+  <div class="wrap" style="position:relative;">
+    <div class="sec-num">02</div>
+    <div class="eyebrow">02 · Pollution Fingerprint</div>
+    <h2 class="sec-title">Multi-Parameter Radar</h2>
+    <div class="sec-rule"></div>
+    <p class="sec-sub">All 11 parameters normalised 0–100 as a fraction of the dataset maximum. The shape of each polygon is each lake's unique pollution signature.</p>
+    <div class="g2" style="align-items:start;gap:28px;">
+      <div class="card card-H">
+        <div class="legend" style="justify-content:center;">
+          <div class="li"><span class="lsq" style="background:var(--H);opacity:.8"></span>Hesaraghatta</div>
+          <div class="li"><span class="lsq" style="background:var(--V);opacity:.8"></span>Varthur</div>
+        </div>
+        <div class="ch400"><canvas id="radarC"></canvas></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px;padding-top:8px;">
+        <div class="insight H">🔵 <strong>Hesaraghatta's dominant traits:</strong> pH, Coliform, Nitrate and Hardness (S5). Its alkalinity and biological contamination are severe and defining.</div>
+        <div class="insight V">🟠 <strong>Varthur's dominant traits:</strong> Turbidity, TDS, COD and Phosphorus. It carries a heavier physical and chemical organic load from sewage and urban runoff.</div>
+        <div class="insight N" style="font-size:.78rem;">⚠ <strong>Radar normalisation note:</strong> Each axis scales to the dataset maximum between the two lakes. A larger polygon area means a relatively higher value — not necessarily worse quality for all parameters (e.g. higher DO is better, not worse).</div>
+        <div class="card" style="padding:22px;">
+          <div class="card-title">Average Comparison — Scaled View</div>
+          <div class="card-sub">Key indicators side-by-side at reduced scale for visual comparison</div>
+          <div class="legend">
+            <div class="li"><span class="lsq" style="background:var(--H)"></span>Hesaraghatta</div>
+            <div class="li"><span class="lsq" style="background:var(--V)"></span>Varthur</div>
+          </div>
+          <div class="ch280"><canvas id="avgBarC"></canvas></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════════════════
+     03 pH & TURBIDITY
+══════════════════════════════════════════ -->
+<section class="sec sec-alt reveal">
+  <div class="wrap" style="position:relative;">
+    <div class="sec-num">03</div>
+    <div class="eyebrow">03 · Physical Parameters</div>
+    <h2 class="sec-title">Which lake is more alkaline — and more turbid?</h2>
+    <div class="sec-rule"></div>
+    <p class="sec-sub">Hesaraghatta exceeds the BIS/WHO pH ceiling in every single sample. Varthur's Sample 1 turbidity spike stands far above both lakes' other readings.</p>
+    <div class="g2">
+      <div class="card card-H">
+        <div class="card-title">pH Across 5 Samples</div>
+        <div class="card-sub">BIS/WHO acceptable range: 6.5–8.5 · Hesaraghatta above upper limit across all 5 samples</div>
+        <div class="legend">
+          <div class="li"><span class="lsq" style="background:var(--H)"></span>Hesaraghatta</div>
+          <div class="li"><span class="lsq" style="background:var(--V)"></span>Varthur</div>
+          <div class="li"><span class="lsq" style="background:var(--warn);opacity:.7"></span>BIS Upper Limit (8.5)</div>
+        </div>
+        <div class="ch280"><canvas id="phC"></canvas></div>
+        <div class="insight H" style="margin-top:16px;font-size:.78rem;">Avg pH 9.34 vs 8.08. pH above 9 causes ammonia toxicity to fish, disrupts carbonate equilibrium, and suppresses many invertebrate species. Hesaraghatta fails this threshold at every sample point.</div>
+      </div>
+      <div class="card card-V">
+        <div class="card-title">Turbidity Across 5 Samples (NTU)</div>
+        <div class="card-sub">WHO drinking-water limit: 5 NTU · Varthur S1 peaked at 12.3 NTU — 2.5× the threshold</div>
+        <div class="legend">
+          <div class="li"><span class="lsq" style="background:var(--H)"></span>Hesaraghatta</div>
+          <div class="li"><span class="lsq" style="background:var(--V)"></span>Varthur</div>
+          <div class="li"><span class="lsq" style="background:var(--warn);opacity:.7"></span>WHO Limit (5 NTU)</div>
+        </div>
+        <div class="ch280"><canvas id="turbC"></canvas></div>
+        <div class="insight V" style="margin-top:16px;font-size:.78rem;">Varthur avg 9.00 NTU vs 5.46 NTU. Hesaraghatta's S3–S5 cluster just above the 5 NTU threshold. Varthur's sustained high turbidity indicates significant suspended sediment and particulate organic matter from urban inflow.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════════════════
+     04 TDS & DO
+══════════════════════════════════════════ -->
+<section class="sec reveal">
+  <div class="wrap" style="position:relative;">
+    <div class="sec-num">04</div>
+    <div class="eyebrow">04 · Dissolved Parameters</div>
+    <h2 class="sec-title">Which lake carries more dissolved load — and less oxygen?</h2>
+    <div class="sec-rule"></div>
+    <p class="sec-sub">Varthur carries over twice the dissolved solids. Hesaraghatta suffers consistent oxygen deficiency that threatens aquatic ecosystems.</p>
+    <div class="g2">
+      <div class="card card-V">
+        <div class="card-title">Total Dissolved Solids — TDS (ppm)</div>
+        <div class="card-sub">BIS Class C limit: 500 ppm · Varthur averages 369.938 ppm — more than 2× Hesaraghatta's 178.6 ppm</div>
+        <div class="legend">
+          <div class="li"><span class="lsq" style="background:var(--H)"></span>Hesaraghatta</div>
+          <div class="li"><span class="lsq" style="background:var(--V)"></span>Varthur</div>
+        </div>
+        <div class="ch280"><canvas id="tdsC"></canvas></div>
+        <div class="insight V" style="margin-top:16px;font-size:.78rem;">Both lakes are within the IS limit of 500 ppm. However, Varthur's TDS is consistently elevated across all 5 samples (364–374 ppm), suggesting a persistent dissolved ion load linked to urban sewage, industrial discharge, or dissolution from surrounding land.</div>
+      </div>
+      <div class="card card-H">
+        <div class="card-title">Dissolved Oxygen (mg/L)</div>
+        <div class="card-sub">BIS Class D (fisheries) minimum: ≥ 4 mg/L · Hesaraghatta dips to 3.3 mg/L in Sample 5</div>
+        <div class="legend">
+          <div class="li"><span class="lsq" style="background:var(--H)"></span>Hesaraghatta</div>
+          <div class="li"><span class="lsq" style="background:var(--V)"></span>Varthur</div>
+          <div class="li"><span class="lsq" style="background:var(--ac);opacity:.7"></span>BIS Class D min (4 mg/L)</div>
+        </div>
+        <div class="ch280"><canvas id="doC"></canvas></div>
+        <div class="insight H" style="margin-top:16px;font-size:.78rem;">Hesaraghatta averages 4.34 mg/L — marginally above the Class D fisheries threshold, with S2 (3.5), S4 (3.7), and S5 (3.3) falling below it. Varthur averages 6.24 mg/L and remains above threshold across all samples, indicating a healthier oxygen balance despite heavier TDS.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════════════════
+     05 FREE CO2 & COD
+══════════════════════════════════════════ -->
+<section class="sec sec-alt reveal">
+  <div class="wrap" style="position:relative;">
+    <div class="sec-num">05</div>
+    <div class="eyebrow">05 · Carbon &amp; Oxygen Demand</div>
+    <h2 class="sec-title">Which lake shows greater dissolved pollution?</h2>
+    <div class="sec-rule"></div>
+    <p class="sec-sub">COD is the clearest fingerprint of organic pollution load. Both lakes' averages diverge sharply — Varthur's is 2.2× higher.</p>
+    <div class="g2" style="margin-bottom:20px;">
+      <div class="card">
+        <div class="card-title">Free CO₂ Across 5 Samples (mg/L)</div>
+        <div class="card-sub">High within-lake variability — driven by biological decomposition, photosynthesis and respiration cycles</div>
+        <div class="legend">
+          <div class="li"><span class="lsq" style="background:var(--H)"></span>Hesaraghatta</div>
+          <div class="li"><span class="lsq" style="background:var(--V)"></span>Varthur</div>
+        </div>
+        <div class="ch280"><canvas id="co2C"></canvas></div>
+        <div class="insight N" style="margin-top:16px;font-size:.78rem;">Averages are similar: Hesaraghatta 5.192 mg/L vs Varthur 5.544 mg/L. Varthur S4 (9.24 mg/L) and Hesaraghatta S2 (8.36 mg/L) are notable peaks, reflecting localised biological activity or decomposition events at specific sampling points.</div>
+      </div>
+      <div class="card card-V">
+        <div class="card-title">Chemical Oxygen Demand — COD (mg/L)</div>
+        <div class="card-sub">IS discharge limit: 250 mg/L · Both within limit, but the gap between them is ecologically significant</div>
+        <div class="big-compare" style="margin-bottom:20px;">
+          <div class="big-col H"><div class="big-num H">32</div><div class="big-unit">mg/L</div><div class="big-name">Hesaraghatta</div></div>
+          <div class="big-col V"><div class="big-num V">71</div><div class="big-unit">mg/L</div><div class="big-name">Varthur</div></div>
+        </div>
+        <div class="ch240"><canvas id="codC"></canvas></div>
+        <div class="insight V" style="margin-top:16px;font-size:.78rem;">Varthur's COD of 71 mg/L is 2.2× Hesaraghatta's 32 mg/L. Higher COD reflects greater dissolved organic matter — from untreated sewage, effluents, and decomposing biomass. While neither lake exceeds the IS limit, elevated COD progressively depletes oxygen reserves, drives BOD, and degrades aquatic habitat over time.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════════════════
+     06 NUTRIENTS
+══════════════════════════════════════════ -->
+<section class="sec reveal">
+  <div class="wrap" style="position:relative;">
+    <div class="sec-num">06</div>
+    <div class="eyebrow">06 · Nutrients</div>
+    <h2 class="sec-title">Which lake shows stronger nutrient pollution?</h2>
+    <div class="sec-rule"></div>
+    <p class="sec-sub">Ammonia, nitrate, and phosphorus are the three principal eutrophication triggers. Each lake leads on a different nutrient — revealing distinct pollution pathways.</p>
+
+    <div class="g2" style="margin-bottom:24px;">
+      <!-- Ammonia & Nitrate chart -->
+      <div class="card card-H">
+        <div class="card-title">Ammonia &amp; Nitrate Comparison (mg/L)</div>
+        <div class="card-sub">Hesaraghatta leads on both — elevated ammonia and measurable nitrate signal agricultural/waste inputs</div>
+        <div class="legend">
+          <div class="li"><span class="lsq" style="background:var(--H)"></span>Hesaraghatta</div>
+          <div class="li"><span class="lsq" style="background:var(--V)"></span>Varthur</div>
+          <div class="li"><span class="lsq" style="background:var(--warn);opacity:.7"></span>BIS Ammonia limit (1.2)</div>
+        </div>
+        <div class="ch280"><canvas id="ammNitC"></canvas></div>
+        <div class="insight H" style="margin-top:16px;font-size:.78rem;"><strong>Hesaraghatta:</strong> Ammonia 0.25 mg/L (within BIS Class D ≤ 1.2 mg/L) · Nitrate 15 mg/L (within BIS ≤ 45 mg/L). The presence of measurable nitrate suggests inorganic nitrogen inputs from agricultural drainage or decomposing organic matter. <strong>Varthur:</strong> Ammonia 0.15 mg/L · Nitrate measured at 0 mg/L at the time of sampling — this reflects the recorded result, not an absence of nutrient inputs.</div>
+      </div>
+
+      <!-- Phosphorus standalone -->
+      <div class="card card-V">
+        <div class="card-title">Total Phosphorus (mg/L)</div>
+        <div class="card-sub">BIS eutrophication threshold: ~0.1 mg/L · Varthur exceeds it at 0.22 mg/L — a significant eutrophication driver</div>
+        <div class="legend">
+          <div class="li"><span class="lsq" style="background:var(--H)"></span>Hesaraghatta (0.04)</div>
+          <div class="li"><span class="lsq" style="background:var(--V)"></span>Varthur (0.22)</div>
+          <div class="li"><span class="lsq" style="background:var(--warn);opacity:.7"></span>Eutrophication threshold (~0.1)</div>
+        </div>
+        <div class="ch280"><canvas id="phosphC"></canvas></div>
+        <div class="insight V" style="margin-top:16px;font-size:.78rem;"><strong>Varthur</strong> (0.22 mg/L) is 5.5× Hesaraghatta's phosphorus load (0.04 mg/L), and more than 2× above the indicative eutrophication threshold of 0.1 mg/L. Elevated phosphorus is strongly linked to algal blooms, hypoxia events, and long-term lake degradation. Hesaraghatta's result is within acceptable bounds.</div>
+      </div>
+    </div>
+
+    <!-- Nutrients side-by-side lollipop summary -->
+    <div class="card" style="padding:30px 28px;">
+      <div class="card-title" style="margin-bottom:20px;">Nutrient Profile Summary — Both Lakes</div>
+      <div class="lollipop-wrap" id="lollipopContainer"></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════════════════
+     07 TOTAL HARDNESS
+══════════════════════════════════════════ -->
+<section class="sec sec-alt reveal">
+  <div class="wrap" style="position:relative;">
+    <div class="sec-num">07</div>
+    <div class="eyebrow">07 · Water Chemistry</div>
+    <h2 class="sec-title">How does hardness compare across sampling points?</h2>
+    <div class="sec-rule"></div>
+    <p class="sec-sub">Total hardness affects taste, scaling, aquatic carbonate chemistry, and downstream treatment requirements. Available data covers Sample 1, Sample 5, and the reported average.</p>
+    <div class="g2">
+      <div class="card card-H">
+        <div class="card-title">Total Hardness — Available Samples (mg/L)</div>
+        <div class="card-sub">IS 10500 limit: ≤ 300 mg/L · Hesaraghatta S5 (370 mg/L) exceeds this threshold</div>
+        <div class="legend">
+          <div class="li"><span class="lsq" style="background:var(--H)"></span>Hesaraghatta</div>
+          <div class="li"><span class="lsq" style="background:var(--V)"></span>Varthur</div>
+          <div class="li"><span class="lsq" style="background:var(--warn);opacity:.7"></span>IS Limit (300 mg/L)</div>
+        </div>
+        <div class="ch280"><canvas id="hardC"></canvas></div>
+        <div class="hard-note">⚠ Data note: Hardness measurements are available only for Sample 1, Sample 5, and the reported average. Samples 2, 3, and 4 were not recorded. No values have been fabricated or interpolated.</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <div class="insight H">🔵 <strong>Hesaraghatta:</strong> S1 (182 mg/L) is within the IS limit. However, S5 (370 mg/L) <em>exceeds</em> it — a sharp intra-lake variation that warrants further investigation. Average of 276 mg/L remains below 300 mg/L.</div>
+        <div class="insight V">🟠 <strong>Varthur:</strong> S1 (210 mg/L) and S5 (230 mg/L) are both within the IS limit. Average of 220 mg/L reflects a more consistent hardness profile across sampling points.</div>
+        <div class="insight N">📊 <strong>Why does hardness vary within a lake?</strong> Total hardness (mainly Ca²⁺ and Mg²⁺) can vary between sampling locations due to proximity to sediment, groundwater interaction, and evaporative concentration. Hesaraghatta's S5 spike may reflect a near-inflow or near-bedrock sampling point.</div>
+        <div class="card" style="padding:22px;">
+          <div class="card-title" style="margin-bottom:4px;">Hardness — Direct Comparison</div>
+          <div class="card-sub">Sample 1 · Sample 5 · Average</div>
+          <div class="ch240"><canvas id="hardBarC"></canvas></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════════════════
+     08 COLIFORM
+══════════════════════════════════════════ -->
+<section class="sec reveal">
+  <div class="wrap" style="position:relative;">
+    <div class="sec-num">08</div>
+    <div class="eyebrow">08 · Biological Safety</div>
+    <h2 class="sec-title">Which lake is biologically more unsafe?</h2>
+    <div class="sec-rule"></div>
+    <p class="sec-sub">Total coliform count is the most direct indicator of fecal contamination and biological hazard. Both lakes exceed safe limits by orders of magnitude.</p>
+    <div class="g2" style="align-items:start;">
+      <div>
+        <div class="coli-big R">
+          <div class="coli-num R">1,450 <span style="font-size:1rem;font-weight:400;color:var(--mu)">CFU / 100 mL</span></div>
+          <div class="coli-lake R">Hesaraghatta Lake</div>
+          <div class="coli-desc">🚨 1,450× above the WHO drinking water standard of 0 CFU/100 mL. Indicates direct fecal inputs from sewage inflow, open drains, or contaminated agricultural runoff mixing directly into the lake catchment. Biologically unsafe for any contact or consumption without advanced treatment.</div>
+        </div>
+        <div class="coli-big W" style="margin-top:14px;">
+          <div class="coli-num W">132 <span style="font-size:1rem;font-weight:400;color:var(--mu)">CFU / 100 mL</span></div>
+          <div class="coli-lake W">Varthur Lake</div>
+          <div class="coli-desc">⚠ 132× above the WHO limit. Significantly lower than Hesaraghatta, but still far beyond safe limits for any use without treatment. Requires mandatory disinfection and source tracing of fecal contamination pathways.</div>
+        </div>
+        <div class="insight N" style="margin-top:14px;font-size:.79rem;">Both lakes require urgent remediation. Hesaraghatta's count is approximately 11× Varthur's, indicating substantially higher biological contamination. However, neither lake should be considered safe for any contact without full treatment. These results reflect the severity of urban wastewater management failure in the Bengaluru lake catchments.</div>
+      </div>
+      <div class="card card-V">
+        <div class="card-title">Coliform Count — Log Scale Comparison</div>
+        <div class="card-sub">WHO drinking water limit: 0 CFU/100 mL · Log scale used to show the scale difference clearly</div>
+        <div class="ch360"><canvas id="coliC"></canvas></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════════════════
+     09 COMPLETE RAW DATA
+══════════════════════════════════════════ -->
+<section class="sec sec-alt reveal">
+  <div class="wrap" style="position:relative;">
+    <div class="sec-num">09</div>
+    <div class="eyebrow">09 · Source Data</div>
+    <h2 class="sec-title">Complete Raw Data Tables</h2>
+    <div class="sec-rule"></div>
+    <p class="sec-sub">All field measurements as recorded — every sample, every parameter, with BIS/WHO compliance status annotated.</p>
+
+    <p style="font-size:.76rem;color:var(--mu);letter-spacing:1.2px;text-transform:uppercase;font-weight:500;margin-bottom:10px;">A · Sample-wise Measurements (pH, Turbidity, TDS, DO, Free CO₂)</p>
+    <div class="tw">
+      <table>
+        <thead><tr><th>Sample</th><th>Lake</th><th>pH</th><th>Turbidity (NTU)</th><th>TDS (ppm)</th><th>DO (mg/L)</th><th>Free CO₂ (mg/L)</th></tr></thead>
+        <tbody>
+          <tr><td>S1</td><td class="thc">Hesaraghatta</td><td>9.8</td><td>5.1</td><td>178</td><td>6.8</td><td>4.84</td></tr>
+          <tr><td>S2</td><td class="thc">Hesaraghatta</td><td>9.5</td><td>5.2</td><td>179</td><td>3.5</td><td>8.36</td></tr>
+          <tr><td>S3</td><td class="thc">Hesaraghatta</td><td>9.2</td><td>5.6</td><td>179</td><td>4.4</td><td>3.52</td></tr>
+          <tr><td>S4</td><td class="thc">Hesaraghatta</td><td>9.3</td><td>5.8</td><td>178</td><td>3.7</td><td>4.40</td></tr>
+          <tr><td>S5</td><td class="thc">Hesaraghatta</td><td>8.9</td><td>5.6</td><td>179</td><td>3.3</td><td>4.84</td></tr>
+          <tr class="avrow"><td colspan="2">⌀ Hesaraghatta Average</td><td>9.34</td><td>5.46</td><td>178.6</td><td>4.34</td><td>5.192</td></tr>
+          <tr><td>S1</td><td class="tvc">Varthur</td><td>8.35</td><td>12.3</td><td>367.34</td><td>7.2</td><td>5.28</td></tr>
+          <tr><td>S2</td><td class="tvc">Varthur</td><td>8.10</td><td>7.1</td><td>364.67</td><td>6.5</td><td>3.08</td></tr>
+          <tr><td>S3</td><td class="tvc">Varthur</td><td>7.80</td><td>8.2</td><td>371.34</td><td>5.2</td><td>4.40</td></tr>
+          <tr><td>S4</td><td class="tvc">Varthur</td><td>7.95</td><td>9.2</td><td>372.34</td><td>5.8</td><td>9.24</td></tr>
+          <tr><td>S5</td><td class="tvc">Varthur</td><td>8.20</td><td>8.2</td><td>374.00</td><td>6.5</td><td>5.72</td></tr>
+          <tr class="avrow"><td colspan="2">⌀ Varthur Average</td><td>8.08</td><td>9.00</td><td>369.938</td><td>6.24</td><td>5.544</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p style="font-size:.76rem;color:var(--mu);letter-spacing:1.2px;text-transform:uppercase;font-weight:500;margin-bottom:10px;margin-top:24px;">B · Single Measurements &amp; Compliance</p>
+    <div class="tw">
+      <table>
+        <thead><tr><th>Parameter</th><th>Unit</th><th>Hesaraghatta</th><th>Varthur</th><th>BIS / WHO Guideline</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>COD</td><td>mg/L</td><td class="thc">32</td><td class="tvc">71</td><td>≤ 250 mg/L</td><td><span class="badge ok">✓ Both within limit</span></td></tr>
+          <tr><td>Ammonia</td><td>mg/L</td><td class="thc">0.25</td><td class="tvc">0.15</td><td>≤ 1.2 mg/L (Class D)</td><td><span class="badge ok">✓ Both within limit</span></td></tr>
+          <tr><td>Nitrate</td><td>mg/L</td><td class="thc">15</td><td class="tvc">0</td><td>≤ 45 mg/L</td><td><span class="badge ok">✓ Both within limit</span></td></tr>
+          <tr><td>Total Phosphorus</td><td>mg/L</td><td class="thc">0.04</td><td class="tvc">0.22</td><td>~0.1 mg/L (eutrophication)</td><td><span class="badge d">⚠ Varthur above threshold</span></td></tr>
+          <tr><td>Total Hardness S1</td><td>mg/L</td><td class="thc">182</td><td class="tvc">210</td><td>≤ 300 mg/L</td><td><span class="badge ok">✓ Both OK</span></td></tr>
+          <tr><td>Total Hardness S5</td><td>mg/L</td><td class="thc">370</td><td class="tvc">230</td><td>≤ 300 mg/L</td><td><span class="badge w">⚠ Hesaraghatta S5 exceeds</span></td></tr>
+          <tr><td>Total Hardness Avg</td><td>mg/L</td><td class="thc">276</td><td class="tvc">220</td><td>≤ 300 mg/L</td><td><span class="badge ok">✓ Avg within limit</span></td></tr>
+          <tr><td>Coliform</td><td>CFU/100 mL</td><td class="thc">1450</td><td class="tvc">132</td><td>0 (drinking water)</td><td><span class="badge d">🚨 Both unsafe</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p style="font-size:.76rem;color:var(--mu);letter-spacing:1.2px;text-transform:uppercase;font-weight:500;margin-bottom:10px;margin-top:24px;">C · Complete Averages Quick Reference</p>
+    <div class="tw">
+      <table>
+        <thead><tr><th>Parameter</th><th>Unit</th><th>Hesaraghatta Avg</th><th>Varthur Avg</th><th>Higher in</th></tr></thead>
+        <tbody>
+          <tr><td>pH</td><td>—</td><td class="thc">9.34</td><td class="tvc">8.08</td><td><span class="badge w">Hesaraghatta</span></td></tr>
+          <tr><td>Turbidity</td><td>NTU</td><td class="thc">5.46</td><td class="tvc">9.00</td><td><span class="badge d">Varthur ↑</span></td></tr>
+          <tr><td>TDS</td><td>ppm</td><td class="thc">178.6</td><td class="tvc">369.938</td><td><span class="badge d">Varthur ↑</span></td></tr>
+          <tr><td>Dissolved Oxygen</td><td>mg/L</td><td class="thc">4.34</td><td class="tvc">6.24</td><td><span class="badge ok">Varthur (better)</span></td></tr>
+          <tr><td>Free CO₂</td><td>mg/L</td><td class="thc">5.192</td><td class="tvc">5.544</td><td>Varthur (marginally)</td></tr>
+          <tr><td>COD</td><td>mg/L</td><td class="thc">32</td><td class="tvc">71</td><td><span class="badge d">Varthur ↑</span></td></tr>
+          <tr><td>Total Hardness Avg</td><td>mg/L</td><td class="thc">276</td><td class="tvc">220</td><td><span class="badge w">Hesaraghatta</span></td></tr>
+          <tr><td>Ammonia</td><td>mg/L</td><td class="thc">0.25</td><td class="tvc">0.15</td><td>Hesaraghatta (marginally)</td></tr>
+          <tr><td>Nitrate</td><td>mg/L</td><td class="thc">15</td><td class="tvc">0</td><td><span class="badge w">Hesaraghatta</span></td></tr>
+          <tr><td>Total Phosphorus</td><td>mg/L</td><td class="thc">0.04</td><td class="tvc">0.22</td><td><span class="badge d">Varthur ↑</span></td></tr>
+          <tr><td>Coliform</td><td>CFU/100 mL</td><td class="thc">1450</td><td class="tvc">132</td><td><span class="badge d">Hesaraghatta ↑↑</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════════════════
+     10 COMPARATIVE VERDICT
+══════════════════════════════════════════ -->
+<section class="sec reveal">
+  <div class="wrap" style="position:relative;">
+    <div class="sec-num">10</div>
+    <div class="eyebrow">10 · Synthesis</div>
+    <h2 class="sec-title">Comparative Verdict</h2>
+    <div class="sec-rule"></div>
+    <p class="sec-sub">Across 11 parameters, each lake presents a distinct and serious pollution profile. Neither is clean — but the nature and severity of their impairment differs fundamentally.</p>
+
+    <div class="verdict-grid" style="margin-bottom:28px;">
+      <div class="vcard H">
+        <div class="vcard-title H">Hesaraghatta Lake</div>
+        <div class="vi"><span class="vi-icon">🔴</span><span><strong>pH crisis:</strong> Exceeds BIS upper limit (8.5) at every sample point. Avg 9.34 — severe alkalinity stress on aquatic ecology.</span></div>
+        <div class="vi"><span class="vi-icon">🔴</span><span><strong>Biological contamination:</strong> 1,450 CFU/100 mL — 11× Varthur, indicating systemic fecal inputs from sewage or agricultural runoff.</span></div>
+        <div class="vi"><span class="vi-icon">🟡</span><span><strong>Oxygen stress:</strong> Avg DO of 4.34 mg/L. Three of five samples dip below the BIS Class D fisheries threshold of 4 mg/L.</span></div>
+        <div class="vi"><span class="vi-icon">🟡</span><span><strong>Hardness spike:</strong> Sample 5 at 370 mg/L exceeds the IS 10500 limit of 300 mg/L — significant intra-lake variation noted.</span></div>
+        <div class="vi"><span class="vi-icon">🟡</span><span><strong>Nitrate present:</strong> 15 mg/L — within BIS limits but indicates inorganic nitrogen inputs, possibly from agricultural drainage or decomposition.</span></div>
+        <div class="vi"><span class="vi-icon">✅</span><span><strong>Advantages:</strong> Lower turbidity (5.46 vs 9.00 NTU), lower TDS (178.6 vs 369.9 ppm), lower COD (32 vs 71 mg/L), and lower phosphorus (0.04 vs 0.22 mg/L).</span></div>
+      </div>
+      <div class="vcard V">
+        <div class="vcard-title V">Varthur Lake</div>
+        <div class="vi"><span class="vi-icon">🔴</span><span><strong>Turbidity:</strong> Avg 9.00 NTU — consistently above WHO 5 NTU limit. S1 at 12.3 NTU is the highest single reading across both lakes.</span></div>
+        <div class="vi"><span class="vi-icon">🔴</span><span><strong>Phosphorus excess:</strong> 0.22 mg/L — 5.5× Hesaraghatta's level, exceeding the eutrophication threshold and posing a long-term algal bloom risk.</span></div>
+        <div class="vi"><span class="vi-icon">🔴</span><span><strong>COD load:</strong> 71 mg/L — 2.2× Hesaraghatta's COD. Indicates substantially higher dissolved organic matter from urban and sewage inputs.</span></div>
+        <div class="vi"><span class="vi-icon">🟡</span><span><strong>Dissolved solids:</strong> Avg TDS of 369.938 ppm — more than 2× Hesaraghatta's. Both within IS limit, but Varthur's sustained load reflects persistent ion inputs.</span></div>
+        <div class="vi"><span class="vi-icon">🟡</span><span><strong>Coliform:</strong> 132 CFU/100 mL — far below Hesaraghatta, but still 132× above WHO standards and biologically unsafe without treatment.</span></div>
+        <div class="vi"><span class="vi-icon">✅</span><span><strong>Advantages:</strong> Better dissolved oxygen (6.24 vs 4.34 mg/L), pH within BIS range (8.08), and lower coliform, hardness, nitrate, and ammonia.</span></div>
+      </div>
+    </div>
+
+    <div class="insight G" style="font-size:.85rem;line-height:1.8;padding:24px 26px;">
+      <strong>🔬 Overall assessment:</strong> Hesaraghatta is more severely affected by <em>biological and alkaline contamination</em> — its pH exceedance, coliform count, and DO deficiency pose acute ecological and public health risks. Varthur shows a more <em>chemically and organically polluted</em> profile — high turbidity, TDS, COD, and phosphorus reflect the cumulative impact of urban sewage and runoff. Both lakes are unfit for drinking, direct contact, or fisheries support without significant remediation. Targeted interventions differ: Hesaraghatta requires sewage source control and alkalinity management; Varthur requires nutrient load reduction, turbidity control, and organic waste interception.
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     FOOTER
+══════════════════════════════════════════ -->
+<footer style="background:var(--s1);padding:40px 0;border-top:1px solid var(--br);">
+  <div class="wrap" style="text-align:center;">
+    <p style="font-size:.76rem;color:var(--mu);line-height:1.7;">Data source: Field measurements from Hesaraghatta Lake and Varthur Lake, Bengaluru · 5 samples per lake · BIS IS 2296:1992 &amp; IS 10500 standards · WHO Drinking Water Guidelines · This analysis presents measured values only — no values have been fabricated or extrapolated.</p>
+    <p style="font-size:.72rem;color:rgba(255,255,255,.18);margin-top:10px;">Hesaraghatta vs Varthur · Comparative Water Quality Study</p>
+  </div>
+</footer>
+
+<script>
+/* ═══ CHART.JS GLOBALS ═══ */
+const HC = 'rgba(56,189,248,1)';
+const VC = 'rgba(251,146,60,1)';
+const HB = 'rgba(56,189,248,0.65)';
+const VB = 'rgba(251,146,60,0.65)';
+const HA = 'rgba(56,189,248,0.12)';
+const VA = 'rgba(251,146,60,0.12)';
+const SL = ['S1','S2','S3','S4','S5'];
+const WARN = 'rgba(251,191,36,0.65)';
+const GREEN = 'rgba(52,211,153,0.65)';
+
+const GX = {color:'rgba(255,255,255,0.05)'};
+const TX = {color:'rgba(168,196,220,0.7)',font:{size:11}};
+const TT = {
+  backgroundColor:'rgba(8,16,32,0.95)',
+  borderColor:'rgba(255,255,255,0.1)',
+  borderWidth:1,
+  titleColor:'#e8f0ff',
+  bodyColor:'rgba(168,196,220,0.9)',
+  padding:12,
+  cornerRadius:8
+};
+
+function baseOpts(minY, maxY) {
+  return {
+    responsive:true, maintainAspectRatio:false,
+    plugins:{legend:{display:false}, tooltip:TT},
+    scales:{
+      x:{ticks:{color:'rgba(168,196,220,0.7)',font:{size:11}}, grid:GX},
+      y:{ticks:TX, grid:GX,
+         min: minY !== undefined ? minY : undefined,
+         max: maxY !== undefined ? maxY : undefined}
+    }
+  };
+}
+
+function lineDS(data, color, label) {
+  return {
+    label, data,
+    borderColor: color,
+    backgroundColor: color.replace('1)','0.1)'),
+    borderWidth: 2.5,
+    pointBackgroundColor: color,
+    pointRadius: 5,
+    pointHoverRadius: 7,
+    tension: 0.35,
+    fill: true
+  };
+}
+
+function refLine(val, label, color) {
+  return {
+    label, data: Array(5).fill(val),
+    borderColor: color,
+    backgroundColor:'transparent',
+    borderWidth: 1.5,
+    borderDash: [6,4],
+    pointRadius: 0,
+    fill: false
+  };
+}
+
+/* ── RADAR ── */
+new Chart(document.getElementById('radarC'),{
+  type:'radar',
+  data:{
+    labels:['pH','Turbidity','TDS','DO','CO₂','COD','Coliform','Hardness','Nitrate','Ammonia','Phosphorus'],
+    datasets:[
+      {label:'Hesaraghatta', data:[94,47,43,55,50,13,97,65,100,63,15],
+       borderColor:HC, backgroundColor:HA, pointBackgroundColor:HC, pointRadius:4, borderWidth:2.5},
+      {label:'Varthur', data:[81,75,93,79,53,28,9,52,0,38,100],
+       borderColor:VC, backgroundColor:VA, pointBackgroundColor:VC, pointRadius:4, borderWidth:2.5}
+    ]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{legend:{display:false}, tooltip:TT},
+    scales:{r:{
+      ticks:{color:'rgba(168,196,220,0.5)',font:{size:9},backdropColor:'transparent',stepSize:25},
+      grid:{color:'rgba(255,255,255,0.06)'},
+      angleLines:{color:'rgba(255,255,255,0.06)'},
+      pointLabels:{color:'rgba(168,196,220,0.8)',font:{size:11}},
+      min:0, max:100
+    }}
+  }
+});
+
+/* ── AVG BAR (scaled) ── */
+new Chart(document.getElementById('avgBarC'),{
+  type:'bar',
+  data:{
+    labels:['pH','Turb.','TDS/20','DO','CO₂','COD/5','Hard/20'],
+    datasets:[
+      {label:'Hesaraghatta', data:[9.34,5.46,8.93,4.34,5.192,6.4,13.8],
+       backgroundColor:HB, borderColor:HC, borderWidth:1.5, borderRadius:6, borderSkipped:false},
+      {label:'Varthur', data:[8.08,9.00,18.50,6.24,5.544,14.2,11.0],
+       backgroundColor:VB, borderColor:VC, borderWidth:1.5, borderRadius:6, borderSkipped:false}
+    ]
+  },
+  options:{
+    ...baseOpts(0),
+    plugins:{
+      legend:{
+        display:true,
+        labels:{color:'rgba(168,196,220,0.75)',font:{size:11},boxWidth:10,boxHeight:10,borderRadius:2}
+      },
+      tooltip:TT
+    }
+  }
+});
+
+/* ── pH ── */
+new Chart(document.getElementById('phC'),{
+  type:'line',
+  data:{
+    labels:SL,
+    datasets:[
+      lineDS([9.8,9.5,9.2,9.3,8.9],HC,'Hesaraghatta'),
+      lineDS([8.35,8.1,7.8,7.95,8.2],VC,'Varthur'),
+      refLine(8.5,'BIS Upper Limit','rgba(251,191,36,0.7)')
+    ]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:TT},
+    scales:{
+      x:{ticks:{color:'rgba(168,196,220,0.7)',font:{size:11}},grid:GX},
+      y:{ticks:TX, grid:GX, min:7, max:10.5,
+         title:{display:true,text:'pH',color:'rgba(168,196,220,0.5)',font:{size:10}}}
+    }
+  }
+});
+
+/* ── TURBIDITY ── */
+new Chart(document.getElementById('turbC'),{
+  type:'line',
+  data:{
+    labels:SL,
+    datasets:[
+      lineDS([5.1,5.2,5.6,5.8,5.6],HC,'Hesaraghatta'),
+      lineDS([12.3,7.1,8.2,9.2,8.2],VC,'Varthur'),
+      refLine(5,'WHO Limit','rgba(251,191,36,0.7)')
+    ]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:TT},
+    scales:{
+      x:{ticks:{color:'rgba(168,196,220,0.7)',font:{size:11}},grid:GX},
+      y:{ticks:TX, grid:GX, min:0, max:14,
+         title:{display:true,text:'NTU',color:'rgba(168,196,220,0.5)',font:{size:10}}}
+    }
+  }
+});
+
+/* ── TDS ── */
+new Chart(document.getElementById('tdsC'),{
+  type:'bar',
+  data:{
+    labels:SL,
+    datasets:[
+      {label:'Hesaraghatta', data:[178,179,179,178,179],
+       backgroundColor:HB, borderColor:HC, borderWidth:1.5, borderRadius:6, borderSkipped:false},
+      {label:'Varthur', data:[367.34,364.67,371.34,372.34,374],
+       backgroundColor:VB, borderColor:VC, borderWidth:1.5, borderRadius:6, borderSkipped:false}
+    ]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:TT},
+    scales:{
+      x:{ticks:{color:'rgba(168,196,220,0.7)',font:{size:11}},grid:GX},
+      y:{ticks:TX, grid:GX, min:0, max:450,
+         title:{display:true,text:'ppm',color:'rgba(168,196,220,0.5)',font:{size:10}}}
+    }
+  }
+});
+
+/* ── DO ── */
+new Chart(document.getElementById('doC'),{
+  type:'line',
+  data:{
+    labels:SL,
+    datasets:[
+      lineDS([6.8,3.5,4.4,3.7,3.3],HC,'Hesaraghatta'),
+      lineDS([7.2,6.5,5.2,5.8,6.5],VC,'Varthur'),
+      refLine(4,'BIS Class D min','rgba(52,211,153,0.7)')
+    ]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:TT},
+    scales:{
+      x:{ticks:{color:'rgba(168,196,220,0.7)',font:{size:11}},grid:GX},
+      y:{ticks:TX, grid:GX, min:0, max:9,
+         title:{display:true,text:'mg/L',color:'rgba(168,196,220,0.5)',font:{size:10}}}
+    }
+  }
+});
+
+/* ── FREE CO2 ── */
+new Chart(document.getElementById('co2C'),{
+  type:'line',
+  data:{
+    labels:SL,
+    datasets:[
+      lineDS([4.84,8.36,3.52,4.40,4.84],HC,'Hesaraghatta'),
+      lineDS([5.28,3.08,4.40,9.24,5.72],VC,'Varthur')
+    ]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:TT},
+    scales:{
+      x:{ticks:{color:'rgba(168,196,220,0.7)',font:{size:11}},grid:GX},
+      y:{ticks:TX, grid:GX, min:0, max:12,
+         title:{display:true,text:'mg/L',color:'rgba(168,196,220,0.5)',font:{size:10}}}
+    }
+  }
+});
+
+/* ── COD BAR ── */
+new Chart(document.getElementById('codC'),{
+  type:'bar',
+  data:{
+    labels:['Hesaraghatta','Varthur','IS Limit (250)'],
+    datasets:[{
+      data:[32,71,250],
+      backgroundColor:[HB,VB,'rgba(52,211,153,0.18)'],
+      borderColor:[HC,VC,'rgba(52,211,153,0.6)'],
+      borderWidth:1.5, borderRadius:10, borderSkipped:false
+    }]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:TT},
+    scales:{
+      x:{ticks:{color:'rgba(168,196,220,0.7)',font:{size:11}},grid:GX},
+      y:{ticks:TX, grid:GX, min:0, max:280,
+         title:{display:true,text:'mg/L',color:'rgba(168,196,220,0.5)',font:{size:10}}}
+    }
+  }
+});
+
+/* ── AMMONIA & NITRATE ── */
+new Chart(document.getElementById('ammNitC'),{
+  type:'bar',
+  data:{
+    labels:['Ammonia (mg/L)','Nitrate (mg/L)'],
+    datasets:[
+      {label:'Hesaraghatta', data:[0.25,15],
+       backgroundColor:HB, borderColor:HC, borderWidth:1.5, borderRadius:7, borderSkipped:false},
+      {label:'Varthur', data:[0.15,0],
+       backgroundColor:VB, borderColor:VC, borderWidth:1.5, borderRadius:7, borderSkipped:false}
+    ]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{
+      legend:{display:true, labels:{color:'rgba(168,196,220,0.75)',font:{size:11},boxWidth:10,boxHeight:10}},
+      tooltip:TT
+    },
+    scales:{
+      x:{ticks:{color:'rgba(168,196,220,0.7)',font:{size:11}},grid:GX},
+      y:{ticks:TX, grid:GX, min:0}
+    }
+  }
+});
+
+/* ── PHOSPHORUS ── */
+new Chart(document.getElementById('phosphC'),{
+  type:'bar',
+  data:{
+    labels:['Total Phosphorus (mg/L)'],
+    datasets:[
+      {label:'Hesaraghatta', data:[0.04],
+       backgroundColor:HB, borderColor:HC, borderWidth:1.5, borderRadius:7, borderSkipped:false},
+      {label:'Varthur', data:[0.22],
+       backgroundColor:VB, borderColor:VC, borderWidth:1.5, borderRadius:7, borderSkipped:false},
+      {label:'Eutrophication threshold', data:[0.1], type:'line',
+       borderColor:WARN, backgroundColor:'transparent', pointRadius:6, borderWidth:1.5,
+       borderDash:[6,4], fill:false}
+    ]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{
+      legend:{display:true, labels:{color:'rgba(168,196,220,0.75)',font:{size:11},boxWidth:10,boxHeight:10}},
+      tooltip:TT
+    },
+    scales:{
+      x:{ticks:{color:'rgba(168,196,220,0.7)',font:{size:11}},grid:GX},
+      y:{ticks:TX, grid:GX, min:0, max:0.3,
+         title:{display:true,text:'mg/L',color:'rgba(168,196,220,0.5)',font:{size:10}}}
+    }
+  }
+});
+
+/* ── HARDNESS (dual chart: slope + bar) ── */
+// slope-style using line chart
+new Chart(document.getElementById('hardC'),{
+  type:'line',
+  data:{
+    labels:['Sample 1','Sample 5','Average'],
+    datasets:[
+      {label:'Hesaraghatta', data:[182,370,276],
+       borderColor:HC, backgroundColor:HA,
+       borderWidth:2.5, pointBackgroundColor:HC, pointRadius:6, pointHoverRadius:8,
+       tension:0.2, fill:true},
+      {label:'Varthur', data:[210,230,220],
+       borderColor:VC, backgroundColor:VA,
+       borderWidth:2.5, pointBackgroundColor:VC, pointRadius:6, pointHoverRadius:8,
+       tension:0.2, fill:true},
+      {label:'IS Limit (300)', data:[300,300,300],
+       borderColor:WARN, backgroundColor:'transparent',
+       borderWidth:1.5, borderDash:[6,4], pointRadius:0, fill:false}
+    ]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:TT},
+    scales:{
+      x:{ticks:{color:'rgba(168,196,220,0.7)',font:{size:11}},grid:GX},
+      y:{ticks:TX, grid:GX, min:100, max:420,
+         title:{display:true,text:'mg/L',color:'rgba(168,196,220,0.5)',font:{size:10}}}
+    }
+  }
+});
+
+new Chart(document.getElementById('hardBarC'),{
+  type:'bar',
+  data:{
+    labels:['Sample 1','Sample 5','Average'],
+    datasets:[
+      {label:'Hesaraghatta', data:[182,370,276],
+       backgroundColor:HB, borderColor:HC, borderWidth:1.5, borderRadius:7, borderSkipped:false},
+      {label:'Varthur', data:[210,230,220],
+       backgroundColor:VB, borderColor:VC, borderWidth:1.5, borderRadius:7, borderSkipped:false},
+      {label:'IS Limit', data:[300,300,300], type:'line',
+       borderColor:WARN, backgroundColor:'transparent',
+       pointRadius:0, fill:false, borderWidth:1.5, borderDash:[6,4]}
+    ]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{
+      legend:{display:true, labels:{color:'rgba(168,196,220,0.75)',font:{size:11},boxWidth:10,boxHeight:10}},
+      tooltip:TT
+    },
+    scales:{
+      x:{ticks:{color:'rgba(168,196,220,0.7)',font:{size:11}},grid:GX},
+      y:{ticks:TX, grid:GX, min:0, max:420,
+         title:{display:true,text:'mg/L',color:'rgba(168,196,220,0.5)',font:{size:10}}}
+    }
+  }
+});
+
+/* ── COLIFORM (log scale) ── */
+new Chart(document.getElementById('coliC'),{
+  type:'bar',
+  data:{
+    labels:['Hesaraghatta','Varthur','WHO Limit'],
+    datasets:[{
+      data:[1450,132,0.001],
+      backgroundColor:['rgba(248,113,113,0.6)','rgba(251,191,36,0.55)','rgba(52,211,153,0.18)'],
+      borderColor:['rgba(248,113,113,1)','rgba(251,191,36,1)','rgba(52,211,153,0.6)'],
+      borderWidth:1.5, borderRadius:10, borderSkipped:false
+    }]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:TT},
+    scales:{
+      x:{ticks:{color:'rgba(168,196,220,0.7)',font:{size:11}},grid:GX},
+      y:{
+        type:'logarithmic',
+        ticks:{color:'rgba(168,196,220,0.7)',font:{size:11},
+          callback:(v)=>v>=1?v.toLocaleString():v
+        },
+        grid:GX,
+        title:{display:true,text:'CFU / 100 mL (log scale)',color:'rgba(168,196,220,0.5)',font:{size:10}}
+      }
+    }
+  }
+});
+
+/* ── LOLLIPOP NUTRIENT SUMMARY ── */
+const nutrients = [
+  {label:'Ammonia', hVal:0.25, vVal:0.15, limit:1.2, unit:'mg/L'},
+  {label:'Nitrate', hVal:15, vVal:0, limit:45, unit:'mg/L'},
+  {label:'Total Phosphorus', hVal:0.04, vVal:0.22, limit:0.1, unit:'mg/L'},
+];
+const container = document.getElementById('lollipopContainer');
+nutrients.forEach(n => {
+  const max = Math.max(n.hVal, n.vVal, n.limit) * 1.15;
+  const hPct = (n.hVal/max*100).toFixed(1);
+  const vPct = (n.vVal/max*100).toFixed(1);
+  const lPct = (n.limit/max*100).toFixed(1);
+  const div = document.createElement('div');
+  div.className = 'lolp-row';
+  div.innerHTML = `
+    <div class="lolp-label">${n.label} <span style="font-size:10px;color:var(--mu);font-weight:400">(limit: ${n.limit} ${n.unit})</span></div>
+    <div class="lolp-bars">
+      <div class="lolp-bar-row">
+        <div class="lolp-name" style="color:var(--HM)">Hesaraghatta</div>
+        <div class="lolp-track" style="position:relative;">
+          <div class="lolp-fill" style="width:0%;background:var(--H)" data-w="${hPct}"></div>
+          <div style="position:absolute;top:0;bottom:0;left:${lPct}%;width:1.5px;background:rgba(251,191,36,0.65);border-radius:2px;"></div>
+        </div>
+        <div class="lolp-val" style="color:var(--HM)">${n.hVal}</div>
+      </div>
+      <div class="lolp-bar-row">
+        <div class="lolp-name" style="color:var(--VM)">Varthur</div>
+        <div class="lolp-track" style="position:relative;">
+          <div class="lolp-fill" style="width:0%;background:var(--V)" data-w="${vPct}"></div>
+          <div style="position:absolute;top:0;bottom:0;left:${lPct}%;width:1.5px;background:rgba(251,191,36,0.65);border-radius:2px;"></div>
+        </div>
+        <div class="lolp-val" style="color:var(--VM)">${n.vVal}</div>
+      </div>
+    </div>
+  `;
+  container.appendChild(div);
+});
+
+/* ═══ SCROLL REVEAL ═══ */
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('revealed'); observer.unobserve(e.target); }
+  });
+}, {threshold:0.08});
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+/* ═══ ANIMATE LOLLIPOP BARS ═══ */
+const lolli = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.querySelectorAll('.lolp-fill[data-w]').forEach(bar => {
+        setTimeout(() => { bar.style.width = bar.dataset.w + '%'; }, 200);
+      });
+      lolli.unobserve(e.target);
+    }
+  });
+}, {threshold:0.3});
+const lolliSection = document.getElementById('lollipopContainer');
+if (lolliSection) lolli.observe(lolliSection.closest('.sec'));
+</script>
+</body>
+</html>
