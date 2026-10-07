@@ -237,8 +237,43 @@ document.getElementById('lightbox-modal').addEventListener('click', (e) => {
   }
 });
 
+// In-Page View-Only Document Viewer (Toolbar & Download Options Hidden)
+function openDocViewer(pdfUrl, title) {
+  const modal = document.getElementById('doc-modal');
+  const iframe = document.getElementById('doc-iframe');
+  const titleElem = document.getElementById('doc-title');
+
+  // #toolbar=0&navpanes=0 hides the browser's PDF download and printing toolbar
+  iframe.src = pdfUrl + '#toolbar=0&navpanes=0&scrollbar=1';
+  titleElem.textContent = title || 'Document Preview';
+  modal.classList.add('opacity-100', 'pointer-events-auto');
+  modal.classList.remove('opacity-0', 'pointer-events-none');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeDocViewer() {
+  const modal = document.getElementById('doc-modal');
+  const iframe = document.getElementById('doc-iframe');
+  iframe.src = '';
+  modal.classList.remove('opacity-100', 'pointer-events-auto');
+  modal.classList.add('opacity-0', 'pointer-events-none');
+  document.body.style.overflow = '';
+}
+
+const docModalElem = document.getElementById('doc-modal');
+if (docModalElem) {
+  docModalElem.addEventListener('click', (e) => {
+    if (e.target.id === 'doc-modal') {
+      closeDocViewer();
+    }
+  });
+}
+
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') closeLightbox();
+  if (e.key === 'Escape') {
+    closeLightbox();
+    closeDocViewer();
+  }
 });
 
 // Copy to Clipboard with Toast Notification
