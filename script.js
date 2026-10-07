@@ -242,10 +242,21 @@ function openDocViewer(pdfUrl, title) {
   const modal = document.getElementById('doc-modal');
   const iframe = document.getElementById('doc-iframe');
   const titleElem = document.getElementById('doc-title');
+  const reqBtn = document.getElementById('req-full-btn');
 
   // #toolbar=0&navpanes=0 hides the browser's PDF download and printing toolbar
   iframe.src = pdfUrl + '#toolbar=0&navpanes=0&scrollbar=1';
   titleElem.textContent = title || 'Document Preview';
+
+  if (reqBtn) {
+    if (pdfUrl.includes('Resume')) {
+      reqBtn.style.display = 'none';
+    } else {
+      reqBtn.style.display = 'inline-flex';
+      reqBtn.href = `mailto:chhatria.chhabila25_ccs@apu.edu.in?subject=Request%20for%20Full%20Study:%20${encodeURIComponent(title)}&body=Hi%20Chhabila,%0A%0AI%20am%20interested%20in%20reviewing%20the%20complete%20research%20report%20for:%20${encodeURIComponent(title)}.%0A%0ARegards,`;
+    }
+  }
+
   modal.classList.add('opacity-100', 'pointer-events-auto');
   modal.classList.remove('opacity-0', 'pointer-events-none');
   document.body.style.overflow = 'hidden';
