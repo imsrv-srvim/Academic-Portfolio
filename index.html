@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chhabila | Software Engineer & Tech Graduate Portfolio</title>
+  <meta name="description" content="Portfolio of Chhabila - Tech Graduate, Aspiring Software Engineer, and Problem Solver." />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            primary: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              200: '#c7d2fe',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+            },
+            accent: {
+              500: '#06b6d4',
+              600: '#0891b2',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300 font-sans antialiased selection:bg-indigo-500 selection:text-white">
+
+  <!-- Background decorative glows -->
+  <div class="fixed inset-0 pointer-events-none overflow-hidden -z-10">
+    <div class="absolute -top-40 -right-40 w-96 h-96 bg-indigo-500/10 dark:bg-indigo-600/15 rounded-full blur-3xl"></div>
+    <div class="absolute top-1/2 -left-40 w-96 h-96 bg-cyan-500/10 dark:bg-cyan-500/10 rounded-full blur-3xl"></div>
+    <div class="absolute -bottom-40 right-1/3 w-96 h-96 bg-purple-500/10 dark:bg-purple-600/10 rounded-full blur-3xl"></div>
+  </div>
+
+  <!-- Navigation Bar -->
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-white/80 dark:bg-slate-950/80 border-b border-slate-200/80 dark:border-slate-800/80 transition-colors">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <!-- Logo -->
+      <a href="#hero" class="flex items-center gap-2 group">
+        <span class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-cyan-500 flex items-center justify-center text-white font-bold text-lg shadow-md group-hover:scale-105 transition-transform">
+          C
+        </span>
+        <span class="font-extrabold text-xl tracking-tight bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 bg-clip-text text-transparent">
+          Chhabila<span class="text-indigo-600 dark:text-indigo-400">.dev</span>
+        </span>
+      </a>
+
+      <!-- Desktop Navigation Links -->
+      <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600 dark:text-slate-300">
+        <a href="#about" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">About</a>
+        <a href="#skills" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Skills</a>
+        <a href="#projects" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Projects</a>
+        <a href="#timeline" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Timeline</a>
+        <a href="#contact" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Contact</a>
+      </nav>
+
+      <!-- Right Controls: Dark Mode & Resume CTA -->
+      <div class="flex items-center gap-3">
+        <!-- Theme Toggle Button -->
+        <button id="theme-toggle" type="button" aria-label="Toggle theme" class="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all border border-slate-200 dark:border-slate-800">
+          <i data-lucide="sun" class="w-5 h-5 hidden dark:block text-amber-400"></i>
+          <i data-lucide="moon" class="w-5 h-5 block dark:hidden text-slate-700"></i>
+        </button>
+
+        <!-- Resume Download Button -->
+        <a href="Chhabila_Resume.pdf" download="Chhabila_Resume.pdf" class="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 active:scale-95 transition-all shadow-sm hover:shadow-indigo-500/25">
+          <i data-lucide="download" class="w-4 h-4"></i>
+          <span>Resume</span>
+        </a>
+
+        <!-- Mobile Menu Hamburger -->
+        <button id="mobile-menu-btn" type="button" aria-label="Open navigation menu" class="md:hidden p-2 rounded-xl text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">
+          <i data-lucide="menu" class="w-6 h-6"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Dropdown Menu -->
+    <div id="mobile-menu" class="hidden md:hidden border-b border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-950/95 backdrop-blur-lg px-6 py-4 space-y-3">
+      <a href="#about" class="block py-2 text-slate-700 dark:text-slate-200 font-medium hover:text-indigo-600">About</a>
+      <a href="#skills" class="block py-2 text-slate-700 dark:text-slate-200 font-medium hover:text-indigo-600">Skills</a>
+      <a href="#projects" class="block py-2 text-slate-700 dark:text-slate-200 font-medium hover:text-indigo-600">Projects</a>
+      <a href="#timeline" class="block py-2 text-slate-700 dark:text-slate-200 font-medium hover:text-indigo-600">Timeline</a>
+      <a href="#contact" class="block py-2 text-slate-700 dark:text-slate-200 font-medium hover:text-indigo-600">Contact</a>
+      <a href="Chhabila_Resume.pdf" download="Chhabila_Resume.pdf" class="inline-flex w-full items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700">
+        <i data-lucide="download" class="w-4 h-4"></i>
+        <span>Download Resume</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section id="hero" class="relative min-h-[calc(100vh-4rem)] flex items-center justify-center py-16 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-5xl mx-auto text-center space-y-8">
+      
+      <!-- Availability pill -->
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/80 text-emerald-700 dark:text-emerald-300 text-xs sm:text-sm font-semibold shadow-xs animate-fade-in">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+        <span>Open to Entry-Level & Graduate Opportunities</span>
+      </div>
+
+      <!-- Main Heading & Name -->
+      <div class="space-y-4">
+        <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+          Hi, I'm <span class="bg-gradient-to-r from-indigo-600 via-purple-600 to-cyan-500 bg-clip-text text-transparent">Chhabila</span> 👋
+        </h1>
+        <p class="text-xl sm:text-2xl lg:text-3xl font-medium text-slate-600 dark:text-slate-300 h-10 flex items-center justify-center gap-2">
+          <span>I'm an aspiring</span>
+          <span id="typewriter" class="text-indigo-600 dark:text-indigo-400 font-bold border-r-2 border-indigo-600 dark:border-indigo-400 pr-1">Software Engineer</span>
+        </p>
+      </div>
+
+      <!-- Bio Pitch -->
+      <p class="max-w-2xl mx-auto text-slate-600 dark:text-slate-400 text-base sm:text-lg leading-relaxed">
+        Passionate computer science graduate with a knack for crafting scalable full-stack web applications, clean algorithmic code, and intuitive user experiences.
+      </p>
+
+      <!-- CTA Action Buttons -->
+      <div class="flex flex-wrap items-center justify-center gap-4 pt-2">
+        <a href="#projects" class="px-6 py-3.5 rounded-xl font-semibold text-white bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-600/20 active:scale-95 transition-all flex items-center gap-2">
+          <span>Explore Projects</span>
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </a>
+        <a href="Chhabila_Resume.pdf" download="Chhabila_Resume.pdf" class="px-6 py-3.5 rounded-xl font-semibold text-slate-800 dark:text-slate-200 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 transition-all flex items-center gap-2 shadow-xs">
+          <i data-lucide="file-text" class="w-4 h-4 text-indigo-600 dark:text-indigo-400"></i>
+          <span>Download CV</span>
+        </a>
+        <a href="#contact" class="px-6 py-3.5 rounded-xl font-semibold text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors flex items-center gap-2">
+          <i data-lucide="mail" class="w-4 h-4"></i>
+          <span>Let's Talk</span>
+        </a>
+      </div>
+
+      <!-- Quick Social Icons -->
+      <div class="flex items-center justify-center gap-4 pt-4 text-slate-500 dark:text-slate-400">
+        <a href="https://github.com" target="_blank" rel="noopener noreferrer" aria-label="GitHub Profile" class="p-2.5 rounded-full hover:text-indigo-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all">
+          <i data-lucide="github" class="w-5 h-5"></i>
+        </a>
+        <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn Profile" class="p-2.5 rounded-full hover:text-indigo-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all">
+          <i data-lucide="linkedin" class="w-5 h-5"></i>
+        </a>
+        <a href="mailto:your-email@example.com" aria-label="Email" class="p-2.5 rounded-full hover:text-indigo-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all">
+          <i data-lucide="mail" class="w-5 h-5"></i>
+        </a>
+        <a href="https://leetcode.com" target="_blank" rel="noopener noreferrer" aria-label="LeetCode Profile" class="p-2.5 rounded-full hover:text-indigo-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all">
+          <i data-lucide="code-2" class="w-5 h-5"></i>
+        </a>
+      </div>
+
+      <!-- Scroll Indicator -->
+      <div class="pt-12">
+        <a href="#about" class="inline-flex flex-col items-center gap-1 text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors animate-bounce">
+          <span>Scroll to learn more</span>
+          <i data-lucide="chevron-down" class="w-4 h-4"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Me Section -->
+  <section id="about" class="py-24 px-4 sm:px-6 lg:px-8 border-t border-slate-200/60 dark:border-slate-800/60">
+    <div class="max-w-6xl mx-auto space-y-16">
+      
+      <div class="text-center space-y-3">
+        <span class="text-xs uppercase tracking-widest font-bold text-indigo-600 dark:text-indigo-400">Get To Know Me</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">About Me</h2>
+        <div class="w-12 h-1 bg-indigo-600 mx-auto rounded-full"></div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        <!-- Profile Card & Quick Stats -->
+        <div class="lg:col-span-5 space-y-6">
+          <div class="relative group mx-auto max-w-sm">
+            <div class="absolute -inset-1 rounded-3xl bg-gradient-to-r from-indigo-500 to-cyan-500 opacity-30 group-hover:opacity-60 blur transition duration-500"></div>
+            <div class="relative rounded-3xl overflow-hidden bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 text-center space-y-4">
+              <!-- Avatar Placeholder with initials -->
+              <div class="w-28 h-28 mx-auto rounded-2xl bg-gradient-to-tr from-indigo-600 to-cyan-500 flex items-center justify-center text-white text-4xl font-bold shadow-xl">
+                C
+              </div>
+              <div>
+                <h3 class="text-xl font-bold text-slate-900 dark:text-white">Chhabila</h3>
+                <p class="text-sm text-indigo-600 dark:text-indigo-400 font-medium">B.Tech / B.E. Computer Science</p>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Class of 2024 / 2025</p>
+              </div>
+              <div class="pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-around text-center">
+                <div>
+                  <span class="block text-2xl font-bold text-indigo-600 dark:text-indigo-400">10+</span>
+                  <span class="text-xs text-slate-500">Projects Built</span>
+                </div>
+                <div>
+                  <span class="block text-2xl font-bold text-indigo-600 dark:text-indigo-400">250+</span>
+                  <span class="text-xs text-slate-500">DSA Problems</span>
+                </div>
+                <div>
+                  <span class="block text-2xl font-bold text-indigo-600 dark:text-indigo-400">8.5+</span>
+                  <span class="text-xs text-slate-500">CGPA / Score</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Biography Content -->
+        <div class="lg:col-span-7 space-y-6 text-slate-600 dark:text-slate-300">
+          <p class="text-lg leading-relaxed">
+            I am a recent tech graduate with a strong foundation in <span class="text-indigo-600 dark:text-indigo-400 font-semibold">Data Structures, Algorithms</span>, and <span class="text-indigo-600 dark:text-indigo-400 font-semibold">Modern Web Engineering</span>. 
+            Throughout my academic journey, I've transformed theoretical concepts into production-grade applications that solve practical issues.
+          </p>
+          <p class="leading-relaxed">
+            Whether it's architecting RESTful microservices, designing responsive front-end user experiences, or analyzing complex algorithms, I thrive on continuous learning and collaborative problem-solving.
+          </p>
+          
+          <!-- Key Highlights Grid -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
+            <div class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800/80 flex items-start gap-3">
+              <div class="p-2.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400">
+                <i data-lucide="graduation-cap" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <h4 class="font-bold text-slate-900 dark:text-white text-sm">Solid CS Foundation</h4>
+                <p class="text-xs text-slate-500 mt-1">OS, DBMS, Networks, OOP, and System Design basics.</p>
+              </div>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800/80 flex items-start gap-3">
+              <div class="p-2.5 rounded-xl bg-cyan-50 dark:bg-cyan-950/60 text-cyan-600 dark:text-cyan-400">
+                <i data-lucide="layers" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <h4 class="font-bold text-slate-900 dark:text-white text-sm">Full-Stack Capability</h4>
+                <p class="text-xs text-slate-500 mt-1">From frontend UI components to backend database queries.</p>
+              </div>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800/80 flex items-start gap-3">
+              <div class="p-2.5 rounded-xl bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400">
+                <i data-lucide="zap" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <h4 class="font-bold text-slate-900 dark:text-white text-sm">Fast Learner</h4>
+                <p class="text-xs text-slate-500 mt-1">Adaptable to emerging frameworks, languages, and team workflows.</p>
+              </div>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800/80 flex items-start gap-3">
+              <div class="p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400">
+                <i data-lucide="users" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <h4 class="font-bold text-slate-900 dark:text-white text-sm">Team Player</h4>
+                <p class="text-xs text-slate-500 mt-1">Active contributor in hackathons, group projects & code reviews.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Skills Section -->
+  <section id="skills" class="py-24 px-4 sm:px-6 lg:px-8 bg-slate-100/50 dark:bg-slate-900/40 border-t border-slate-200/60 dark:border-slate-800/60">
+    <div class="max-w-6xl mx-auto space-y-16">
+      
+      <div class="text-center space-y-3">
+        <span class="text-xs uppercase tracking-widest font-bold text-indigo-600 dark:text-indigo-400">Technical Expertise</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">Skills & Technologies</h2>
+        <div class="w-12 h-1 bg-indigo-600 mx-auto rounded-full"></div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        
+        <!-- Category 1: Languages -->
+        <div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs hover:border-indigo-500/50 transition-all space-y-4">
+          <div class="flex items-center gap-3 text-indigo-600 dark:text-indigo-400">
+            <i data-lucide="code" class="w-6 h-6"></i>
+            <h3 class="font-bold text-lg text-slate-900 dark:text-white">Languages</h3>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <span class="skill-tag">Java</span>
+            <span class="skill-tag">Python</span>
+            <span class="skill-tag">C++</span>
+            <span class="skill-tag">JavaScript (ES6+)</span>
+            <span class="skill-tag">TypeScript</span>
+            <span class="skill-tag">SQL</span>
+          </div>
+        </div>
+
+        <!-- Category 2: Frontend -->
+        <div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs hover:border-indigo-500/50 transition-all space-y-4">
+          <div class="flex items-center gap-3 text-cyan-600 dark:text-cyan-400">
+            <i data-lucide="layout" class="w-6 h-6"></i>
+            <h3 class="font-bold text-lg text-slate-900 dark:text-white">Frontend</h3>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <span class="skill-tag">React.js</span>
+            <span class="skill-tag">HTML5 & CSS3</span>
+            <span class="skill-tag">Tailwind CSS</span>
+            <span class="skill-tag">Bootstrap</span>
+            <span class="skill-tag">Next.js Basics</span>
+            <span class="skill-tag">Responsive UI</span>
+          </div>
+        </div>
+
+        <!-- Category 3: Backend & DB -->
+        <div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs hover:border-indigo-500/50 transition-all space-y-4">
+          <div class="flex items-center gap-3 text-purple-600 dark:text-purple-400">
+            <i data-lucide="server" class="w-6 h-6"></i>
+            <h3 class="font-bold text-lg text-slate-900 dark:text-white">Backend & DB</h3>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <span class="skill-tag">Node.js</span>
+            <span class="skill-tag">Express.js</span>
+            <span class="skill-tag">REST APIs</span>
+            <span class="skill-tag">MySQL</span>
+            <span class="skill-tag">PostgreSQL</span>
+            <span class="skill-tag">MongoDB</span>
+          </div>
+        </div>
+
+        <!-- Category 4: Tools & DevOps -->
+        <div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs hover:border-indigo-500/50 transition-all space-y-4">
+          <div class="flex items-center gap-3 text-emerald-600 dark:text-emerald-400">
+            <i data-lucide="cpu" class="w-6 h-6"></i>
+            <h3 class="font-bold text-lg text-slate-900 dark:text-white">Tools & Practices</h3>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <span class="skill-tag">Git & GitHub</span>
+            <span class="skill-tag">Docker Basics</span>
+            <span class="skill-tag">Postman</span>
+            <span class="skill-tag">Linux / Bash</span>
+            <span class="skill-tag">VS Code</span>
+            <span class="skill-tag">Agile / Scrum</span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Projects Section -->
+  <section id="projects" class="py-24 px-4 sm:px-6 lg:px-8 border-t border-slate-200/60 dark:border-slate-800/60">
+    <div class="max-w-6xl mx-auto space-y-16">
+      
+      <div class="text-center space-y-3">
+        <span class="text-xs uppercase tracking-widest font-bold text-indigo-600 dark:text-indigo-400">Showcase</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">Featured Projects</h2>
+        <div class="w-12 h-1 bg-indigo-600 mx-auto rounded-full"></div>
+        <p class="text-slate-600 dark:text-slate-400 max-w-xl mx-auto text-sm sm:text-base">
+          A selection of projects demonstrating full-stack development, API integration, and algorithmic problem-solving.
+        </p>
+      </div>
+
+      <!-- Filter Controls -->
+      <div class="flex flex-wrap items-center justify-center gap-2">
+        <button class="project-filter-btn active" data-filter="all">All Projects</button>
+        <button class="project-filter-btn" data-filter="fullstack">Full-Stack</button>
+        <button class="project-filter-btn" data-filter="frontend">Frontend</button>
+        <button class="project-filter-btn" data-filter="backend">Backend & APIs</button>
+      </div>
+
+      <!-- Projects Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="projects-grid">
+        
+        <!-- Project 1 -->
+        <div class="project-card group" data-category="fullstack">
+          <div class="aspect-video bg-gradient-to-br from-indigo-900 to-slate-900 relative overflow-hidden flex items-center justify-center text-indigo-300">
+            <i data-lucide="shopping-bag" class="w-14 h-14 group-hover:scale-110 transition-transform duration-300"></i>
+            <span class="absolute top-3 right-3 text-xs font-semibold px-2.5 py-1 rounded-full bg-indigo-600/90 text-white">Full-Stack</span>
+          </div>
+          <div class="p-6 space-y-4">
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+              E-Commerce Platform
+            </h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-3">
+              Full-featured online store with user authentication, product catalog search, shopping cart management, Stripe checkout, and an admin dashboard.
+            </p>
+            <div class="flex flex-wrap gap-2 text-xs">
+              <span class="tech-pill">React</span>
+              <span class="tech-pill">Node.js</span>
+              <span class="tech-pill">MongoDB</span>
+              <span class="tech-pill">Tailwind</span>
+            </div>
+            <div class="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800 text-sm">
+              <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1.5 font-medium text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400">
+                <i data-lucide="github" class="w-4 h-4"></i> Code
+              </a>
+              <a href="#" class="flex items-center gap-1.5 font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">
+                Live Demo <i data-lucide="external-link" class="w-4 h-4"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project 2 -->
+        <div class="project-card group" data-category="fullstack">
+          <div class="aspect-video bg-gradient-to-br from-cyan-900 to-slate-900 relative overflow-hidden flex items-center justify-center text-cyan-300">
+            <i data-lucide="check-square" class="w-14 h-14 group-hover:scale-110 transition-transform duration-300"></i>
+            <span class="absolute top-3 right-3 text-xs font-semibold px-2.5 py-1 rounded-full bg-cyan-600/90 text-white">Full-Stack</span>
+          </div>
+          <div class="p-6 space-y-4">
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors">
+              Collaborative Task Manager
+            </h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-3">
+              Kanban-style task tracking tool with real-time updates using WebSockets, drag-and-drop board cards, labels, and team permissions.
+            </p>
+            <div class="flex flex-wrap gap-2 text-xs">
+              <span class="tech-pill">React</span>
+              <span class="tech-pill">Express</span>
+              <span class="tech-pill">Socket.io</span>
+              <span class="tech-pill">PostgreSQL</span>
+            </div>
+            <div class="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800 text-sm">
+              <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1.5 font-medium text-slate-600 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400">
+                <i data-lucide="github" class="w-4 h-4"></i> Code
+              </a>
+              <a href="#" class="flex items-center gap-1.5 font-semibold text-cyan-600 dark:text-cyan-400 hover:underline">
+                Live Demo <i data-lucide="external-link" class="w-4 h-4"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project 3 -->
+        <div class="project-card group" data-category="backend">
+          <div class="aspect-video bg-gradient-to-br from-purple-900 to-slate-900 relative overflow-hidden flex items-center justify-center text-purple-300">
+            <i data-lucide="database" class="w-14 h-14 group-hover:scale-110 transition-transform duration-300"></i>
+            <span class="absolute top-3 right-3 text-xs font-semibold px-2.5 py-1 rounded-full bg-purple-600/90 text-white">Backend</span>
+          </div>
+          <div class="p-6 space-y-4">
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+              Secure REST API & Auth Engine
+            </h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-3">
+              Production-ready REST API featuring JWT authentication, role-based access control (RBAC), rate-limiting middleware, and Swagger docs.
+            </p>
+            <div class="flex flex-wrap gap-2 text-xs">
+              <span class="tech-pill">Node.js</span>
+              <span class="tech-pill">Express</span>
+              <span class="tech-pill">JWT</span>
+              <span class="tech-pill">Redis</span>
+            </div>
+            <div class="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800 text-sm">
+              <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1.5 font-medium text-slate-600 dark:text-slate-400 hover:text-purple-600 dark:hover:text-purple-400">
+                <i data-lucide="github" class="w-4 h-4"></i> Code
+              </a>
+              <a href="#" class="flex items-center gap-1.5 font-semibold text-purple-600 dark:text-purple-400 hover:underline">
+                Docs API <i data-lucide="external-link" class="w-4 h-4"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project 4 -->
+        <div class="project-card group" data-category="frontend">
+          <div class="aspect-video bg-gradient-to-br from-blue-900 to-slate-900 relative overflow-hidden flex items-center justify-center text-blue-300">
+            <i data-lucide="cloud-sun" class="w-14 h-14 group-hover:scale-110 transition-transform duration-300"></i>
+            <span class="absolute top-3 right-3 text-xs font-semibold px-2.5 py-1 rounded-full bg-blue-600/90 text-white">Frontend</span>
+          </div>
+          <div class="p-6 space-y-4">
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+              Weather & Air Quality Dashboard
+            </h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-3">
+              Interactive weather analytics web application using OpenWeather API with geolocation, interactive forecast charts, and dark theme support.
+            </p>
+            <div class="flex flex-wrap gap-2 text-xs">
+              <span class="tech-pill">JavaScript</span>
+              <span class="tech-pill">Chart.js</span>
+              <span class="tech-pill">Tailwind CSS</span>
+              <span class="tech-pill">REST API</span>
+            </div>
+            <div class="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800 text-sm">
+              <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1.5 font-medium text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400">
+                <i data-lucide="github" class="w-4 h-4"></i> Code
+              </a>
+              <a href="#" class="flex items-center gap-1.5 font-semibold text-blue-600 dark:text-blue-400 hover:underline">
+                Live Demo <i data-lucide="external-link" class="w-4 h-4"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project 5 -->
+        <div class="project-card group" data-category="frontend">
+          <div class="aspect-video bg-gradient-to-br from-emerald-900 to-slate-900 relative overflow-hidden flex items-center justify-center text-emerald-300">
+            <i data-lucide="calculator" class="w-14 h-14 group-hover:scale-110 transition-transform duration-300"></i>
+            <span class="absolute top-3 right-3 text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-600/90 text-white">Frontend</span>
+          </div>
+          <div class="p-6 space-y-4">
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+              Algorithmic Visualizer
+            </h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-3">
+              Interactive visualizer for Sorting algorithms (QuickSort, MergeSort) and Pathfinding (Dijkstra, A* Search) with adjustable speed controls.
+            </p>
+            <div class="flex flex-wrap gap-2 text-xs">
+              <span class="tech-pill">React</span>
+              <span class="tech-pill">Algorithms</span>
+              <span class="tech-pill">Data Structures</span>
+              <span class="tech-pill">CSS Canvas</span>
+            </div>
+            <div class="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800 text-sm">
+              <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1.5 font-medium text-slate-600 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400">
+                <i data-lucide="github" class="w-4 h-4"></i> Code
+              </a>
+              <a href="#" class="flex items-center gap-1.5 font-semibold text-emerald-600 dark:text-emerald-400 hover:underline">
+                Live Demo <i data-lucide="external-link" class="w-4 h-4"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project 6 -->
+        <div class="project-card group" data-category="backend">
+          <div class="aspect-video bg-gradient-to-br from-amber-900 to-slate-900 relative overflow-hidden flex items-center justify-center text-amber-300">
+            <i data-lucide="terminal" class="w-14 h-14 group-hover:scale-110 transition-transform duration-300"></i>
+            <span class="absolute top-3 right-3 text-xs font-semibold px-2.5 py-1 rounded-full bg-amber-600/90 text-white">Backend</span>
+          </div>
+          <div class="p-6 space-y-4">
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
+              URL Shortener & Click Analytics
+            </h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-3">
+              High-throughput URL shortening service with QR code generation, browser & referer analytics logging, and Redis caching.
+            </p>
+            <div class="flex flex-wrap gap-2 text-xs">
+              <span class="tech-pill">Python</span>
+              <span class="tech-pill">FastAPI</span>
+              <span class="tech-pill">PostgreSQL</span>
+              <span class="tech-pill">Docker</span>
+            </div>
+            <div class="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800 text-sm">
+              <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1.5 font-medium text-slate-600 dark:text-slate-400 hover:text-amber-600 dark:hover:text-amber-400">
+                <i data-lucide="github" class="w-4 h-4"></i> Code
+              </a>
+              <a href="#" class="flex items-center gap-1.5 font-semibold text-amber-600 dark:text-amber-400 hover:underline">
+                Live Demo <i data-lucide="external-link" class="w-4 h-4"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Timeline (Experience & Education) Section -->
+  <section id="timeline" class="py-24 px-4 sm:px-6 lg:px-8 bg-slate-100/50 dark:bg-slate-900/40 border-t border-slate-200/60 dark:border-slate-800/60">
+    <div class="max-w-4xl mx-auto space-y-16">
+      
+      <div class="text-center space-y-3">
+        <span class="text-xs uppercase tracking-widest font-bold text-indigo-600 dark:text-indigo-400">Track Record</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">Experience & Education</h2>
+        <div class="w-12 h-1 bg-indigo-600 mx-auto rounded-full"></div>
+      </div>
+
+      <!-- Timeline wrapper -->
+      <div class="relative border-l-2 border-indigo-200 dark:border-indigo-900/70 ml-4 md:ml-32 space-y-12">
+        
+        <!-- Timeline Item 1: Internship -->
+        <div class="relative pl-6 sm:pl-8 group">
+          <div class="absolute -left-2.5 top-1.5 w-5 h-5 rounded-full bg-white dark:bg-slate-950 border-4 border-indigo-600"></div>
+          
+          <div class="md:absolute md:-left-36 md:top-1 text-xs md:text-right font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wide mb-1 md:mb-0 md:w-28">
+            Jun 2024 - Aug 2024
+          </div>
+
+          <div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-2 shadow-xs">
+            <span class="inline-block text-xs font-semibold px-2.5 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400">
+              Internship
+            </span>
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white">Software Engineering Intern</h3>
+            <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Tech Solutions Corp / Startup</p>
+            <ul class="text-sm text-slate-600 dark:text-slate-400 list-disc list-inside space-y-1 pt-2">
+              <li>Collaborated on building reusable UI components with React & Tailwind CSS.</li>
+              <li>Engineered backend API endpoints handling JSON payloads with Node.js and Express.</li>
+              <li>Wrote unit tests and resolved critical bugs in sprint cycles, improving stability.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Timeline Item 2: Degree -->
+        <div class="relative pl-6 sm:pl-8 group">
+          <div class="absolute -left-2.5 top-1.5 w-5 h-5 rounded-full bg-white dark:bg-slate-950 border-4 border-indigo-600"></div>
+          
+          <div class="md:absolute md:-left-36 md:top-1 text-xs md:text-right font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wide mb-1 md:mb-0 md:w-28">
+            2021 - 2025
+          </div>
+
+          <div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-2 shadow-xs">
+            <span class="inline-block text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400">
+              Education
+            </span>
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white">Bachelor of Technology (B.Tech) in Computer Science</h3>
+            <p class="text-sm font-medium text-slate-500 dark:text-slate-400">University Institute of Engineering & Technology</p>
+            <p class="text-sm text-slate-600 dark:text-slate-400 pt-1">
+              Relevant Coursework: Data Structures & Algorithms, Object-Oriented Programming, Database Management Systems, Computer Networks, Operating Systems, Software Engineering.
+            </p>
+          </div>
+        </div>
+
+        <!-- Timeline Item 3: Leadership / Hackathon -->
+        <div class="relative pl-6 sm:pl-8 group">
+          <div class="absolute -left-2.5 top-1.5 w-5 h-5 rounded-full bg-white dark:bg-slate-950 border-4 border-indigo-600"></div>
+          
+          <div class="md:absolute md:-left-36 md:top-1 text-xs md:text-right font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wide mb-1 md:mb-0 md:w-28">
+            2023 - 2024
+          </div>
+
+          <div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-2 shadow-xs">
+            <span class="inline-block text-xs font-semibold px-2.5 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400">
+              Achievement
+            </span>
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white">National Hackathon Finalist & Tech Club Lead</h3>
+            <p class="text-sm font-medium text-slate-500 dark:text-slate-400">College Coding Club & Hackathons</p>
+            <p class="text-sm text-slate-600 dark:text-slate-400 pt-1">
+              Led a 4-person team to prototype an AI-driven accessibility web application in 36 hours. Mentored 50+ junior students in Git, web development, and competitive programming basics.
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="py-24 px-4 sm:px-6 lg:px-8 border-t border-slate-200/60 dark:border-slate-800/60">
+    <div class="max-w-5xl mx-auto space-y-16">
+      
+      <div class="text-center space-y-3">
+        <span class="text-xs uppercase tracking-widest font-bold text-indigo-600 dark:text-indigo-400">Get In Touch</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">Let's Connect & Collaborate</h2>
+        <div class="w-12 h-1 bg-indigo-600 mx-auto rounded-full"></div>
+        <p class="text-slate-600 dark:text-slate-400 max-w-xl mx-auto text-sm sm:text-base">
+          I'm actively seeking full-time roles, graduate opportunities, and impactful software engineering internships. Drop a message!
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+        
+        <!-- Contact Cards / Info -->
+        <div class="lg:col-span-5 space-y-6">
+          <div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-4">
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white">Contact Information</h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400">
+              Feel free to reach out directly via email or connect on social platforms. I typically respond within 24 hours.
+            </p>
+            
+            <div class="space-y-4 pt-2">
+              <a href="mailto:your-email@example.com" class="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                <div class="p-2 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400">
+                  <i data-lucide="mail" class="w-5 h-5"></i>
+                </div>
+                <span>your-email@example.com</span>
+              </a>
+
+              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                <div class="p-2 rounded-xl bg-cyan-50 dark:bg-cyan-950/60 text-cyan-600 dark:text-cyan-400">
+                  <i data-lucide="linkedin" class="w-5 h-5"></i>
+                </div>
+                <span>linkedin.com/in/chhabila</span>
+              </a>
+
+              <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                <div class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+                  <i data-lucide="github" class="w-5 h-5"></i>
+                </div>
+                <span>github.com/chhabila</span>
+              </a>
+
+              <div class="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-300">
+                <div class="p-2 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400">
+                  <i data-lucide="map-pin" class="w-5 h-5"></i>
+                </div>
+                <span>India (Open to Relocation & Remote)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive Contact Form -->
+        <div class="lg:col-span-7">
+          <form id="contact-form" class="p-8 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-6 shadow-sm">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div class="space-y-2">
+                <label for="name" class="block text-sm font-semibold text-slate-700 dark:text-slate-300">Your Name</label>
+                <input type="text" id="name" required placeholder="John Doe" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all text-sm" />
+              </div>
+              <div class="space-y-2">
+                <label for="email" class="block text-sm font-semibold text-slate-700 dark:text-slate-300">Your Email</label>
+                <input type="email" id="email" required placeholder="john@example.com" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all text-sm" />
+              </div>
+            </div>
+
+            <div class="space-y-2">
+              <label for="subject" class="block text-sm font-semibold text-slate-700 dark:text-slate-300">Subject</label>
+              <input type="text" id="subject" required placeholder="Job Opportunity / Project Inquiry" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all text-sm" />
+            </div>
+
+            <div class="space-y-2">
+              <label for="message" class="block text-sm font-semibold text-slate-700 dark:text-slate-300">Message</label>
+              <textarea id="message" rows="4" required placeholder="Hi Chhabila, I would love to connect with you regarding..." class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all text-sm resize-none"></textarea>
+            </div>
+
+            <button type="submit" id="submit-btn" class="w-full py-3.5 px-6 rounded-xl font-semibold text-white bg-indigo-600 hover:bg-indigo-700 active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-md shadow-indigo-600/20">
+              <i data-lucide="send" class="w-4 h-4"></i>
+              <span>Send Message</span>
+            </button>
+
+            <!-- Status Alert Message Box -->
+            <div id="form-status" class="hidden p-4 rounded-xl text-sm font-medium"></div>
+          </form>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-8 px-4 sm:px-6 lg:px-8 border-t border-slate-200/80 dark:border-slate-800/80 bg-white/50 dark:bg-slate-950/50 text-sm">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-slate-500 dark:text-slate-400">
+      <div class="flex items-center gap-2">
+        <span class="w-6 h-6 rounded-lg bg-indigo-600 text-white flex items-center justify-center text-xs font-bold">C</span>
+        <span>© <span id="year"></span> Chhabila. Built with HTML, Tailwind CSS & JS.</span>
+      </div>
+
+      <div class="flex items-center gap-6">
+        <a href="#hero" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Back to top ↑</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="script.js"></script>
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+  </script>
+</body>
+</html>
