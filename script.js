@@ -36,10 +36,11 @@ mobileMenu.querySelectorAll('a').forEach((link) => {
 // Typewriter Effect for Hero Headline
 const typewriterElement = document.getElementById('typewriter');
 const roles = [
-  'Software Engineer',
-  'Full-Stack Developer',
-  'Problem Solver',
-  'Tech Graduate'
+  'Climate Finance & ESG Analyst',
+  'Sustainability & Climate Scholar',
+  'Geospatial & GIS Modeler',
+  'Life Cycle Assessment Specialist',
+  'Mathematical & Environmental Analyst'
 ];
 let roleIndex = 0;
 let charIndex = 0;
