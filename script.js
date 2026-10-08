@@ -15,7 +15,6 @@ themeToggleBtn.addEventListener('click', () => {
   htmlElement.classList.toggle('dark');
   const isDark = htmlElement.classList.contains('dark');
   localStorage.setItem('theme', isDark ? 'dark' : 'light');
-  updateChartTheme();
 });
 
 // Mobile Menu Toggle
@@ -38,7 +37,7 @@ const roles = [
   'Climate Finance & ESG Analyst',
   'Scholar of Sustainability & Climate Change',
   'Geospatial (GIS) & Remote Sensing Modeler',
-  'Life Cycle Assessment (LCA) Specialist',
+  'Corporate Sustainability & Carbon Markets',
   'Quantitative Environmental Modeler'
 ];
 let roleIndex = 0;
@@ -97,121 +96,6 @@ filterButtons.forEach((btn) => {
   });
 });
 
-// Interactive LCA Data Modeling Chart
-let lcaChart = null;
-
-const lcaDataSets = {
-  gwp: {
-    label: 'Global Warming Potential (kg CO₂ eq per 1,000 uses)',
-    data: [15.8, 45.2, 28.4, 78.5],
-    backgroundColor: ['#10b981', '#14b8a6', '#0284c7', '#f59e0b'],
-    takeaway: 'While conventional plastic (LDPE) has the lowest manufacturing emissions per single bag, organic cotton requires dozens of reuses to offset its heavy cultivation footprint.'
-  },
-  water: {
-    label: 'Water Consumption (Cubic Meters per 1,000 uses)',
-    data: [0.08, 1.25, 3.40, 24.60],
-    backgroundColor: ['#10b981', '#14b8a6', '#0284c7', '#f59e0b'],
-    takeaway: 'Cotton bag cultivation exhibits extreme agricultural water stress (24.6 m³ per 1,000 uses) compared to virtually negligible water intensity for standard polymer bags.'
-  },
-  eco: {
-    label: 'Terrestrial Ecotoxicity (kg 1,4-DCB eq)',
-    data: [0.22, 0.85, 1.45, 6.70],
-    backgroundColor: ['#10b981', '#14b8a6', '#0284c7', '#f59e0b'],
-    takeaway: 'Agricultural chemical runoff from intensive cotton farming drives substantial terrestrial ecotoxicity, underscoring the critical necessity of multi-criteria life-cycle thinking.'
-  }
-};
-
-function initLcaChart() {
-  const ctx = document.getElementById('lcaChart');
-  if (!ctx) return;
-
-  const isDark = htmlElement.classList.contains('dark');
-  const textColor = isDark ? '#94a3b8' : '#475569';
-  const gridColor = isDark ? 'rgba(255, 255, 255, 0.07)' : 'rgba(0, 0, 0, 0.06)';
-
-  lcaChart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: ['Single-Use LDPE Plastic', 'Kraft Paper Bag', 'Biodegradable Jute Bag', 'Organic Cotton Tote'],
-      datasets: [{
-        label: lcaDataSets.gwp.label,
-        data: lcaDataSets.gwp.data,
-        backgroundColor: lcaDataSets.gwp.backgroundColor,
-        borderRadius: 12,
-        borderWidth: 0,
-        barPercentage: 0.55
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          display: true,
-          labels: {
-            color: textColor,
-            font: { family: '"Plus Jakarta Sans"', size: 12, weight: '600' }
-          }
-        },
-        tooltip: {
-          padding: 12,
-          cornerRadius: 10,
-          titleFont: { family: '"Plus Jakarta Sans"', weight: '700' },
-          bodyFont: { family: '"Plus Jakarta Sans"' }
-        }
-      },
-      scales: {
-        x: {
-          ticks: { color: textColor, font: { family: '"Plus Jakarta Sans"', size: 11 } },
-          grid: { display: false }
-        },
-        y: {
-          ticks: { color: textColor, font: { family: '"JetBrains Mono"', size: 11 } },
-          grid: { color: gridColor }
-        }
-      }
-    }
-  });
-
-  // Setup metric switcher buttons
-  const metricButtons = document.querySelectorAll('#metric-buttons button');
-  const takeawayElem = document.getElementById('lca-takeaway');
-
-  metricButtons.forEach((btn) => {
-    btn.addEventListener('click', () => {
-      metricButtons.forEach((b) => {
-        b.classList.remove('bg-emerald-600', 'text-white', 'shadow-xs');
-        b.classList.add('bg-slate-100', 'dark:bg-slate-800', 'text-slate-600', 'dark:text-slate-300');
-      });
-      btn.classList.add('bg-emerald-600', 'text-white', 'shadow-xs');
-      btn.classList.remove('bg-slate-100', 'dark:bg-slate-800', 'text-slate-600', 'dark:text-slate-300');
-
-      const metric = btn.getAttribute('data-metric');
-      const selected = lcaDataSets[metric];
-
-      lcaChart.data.datasets[0].label = selected.label;
-      lcaChart.data.datasets[0].data = selected.data;
-      lcaChart.update();
-
-      if (takeawayElem) {
-        takeawayElem.textContent = selected.takeaway;
-      }
-    });
-  });
-}
-
-function updateChartTheme() {
-  if (!lcaChart) return;
-  const isDark = htmlElement.classList.contains('dark');
-  const textColor = isDark ? '#94a3b8' : '#475569';
-  const gridColor = isDark ? 'rgba(255, 255, 255, 0.07)' : 'rgba(0, 0, 0, 0.06)';
-
-  lcaChart.options.plugins.legend.labels.color = textColor;
-  lcaChart.options.scales.x.ticks.color = textColor;
-  lcaChart.options.scales.y.ticks.color = textColor;
-  lcaChart.options.scales.y.grid.color = gridColor;
-  lcaChart.update();
-}
 
 // Lightbox Modal Functions
 function openLightbox(src, caption) {
@@ -363,6 +247,5 @@ function showFormStatus(msg, type) {
 // Window load init
 document.addEventListener('DOMContentLoaded', () => {
   typeWriter();
-  initLcaChart();
   document.getElementById('year').textContent = new Date().getFullYear();
 });
