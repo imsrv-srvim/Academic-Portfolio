@@ -35,7 +35,7 @@ mobileMenu.querySelectorAll('a').forEach((link) => {
 const typewriterElement = document.getElementById('typewriter');
 const roles = [
   'Climate Finance & ESG Analyst',
-  'Scholar of Sustainability & Climate Change',
+  'Student of Sustainability & Climate Change',
   'Geospatial (GIS) & Remote Sensing Modeler',
   'Corporate Sustainability & Carbon Markets',
   'Quantitative Environmental Modeler'
