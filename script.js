@@ -34,11 +34,11 @@ mobileMenu.querySelectorAll('a').forEach((link) => {
 // Typewriter Effect for Hero Headline
 const typewriterElement = document.getElementById('typewriter');
 const roles = [
-  'Climate Finance & ESG Analyst',
+  'Corporate Sustainability & ESG Analyst',
+  'Corporate ESG & BRSR Compliance Specialist',
+  'Climate Finance & Carbon Markets',
   'Student of Sustainability & Climate Change',
-  'Geospatial (GIS) & Remote Sensing Modeler',
-  'Corporate Sustainability & Carbon Markets',
-  'Quantitative Environmental Modeler'
+  'Quantitative Environmental Analyst'
 ];
 let roleIndex = 0;
 let charIndex = 0;
