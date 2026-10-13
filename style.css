@@ -245,3 +245,39 @@ html {
   transform: translateY(0);
   opacity: 1;
 }
+
+/* Running Headline Ticker Banner (Work In Progress) */
+.ticker-banner {
+  background: linear-gradient(90deg, #041f17 0%, #083326 50%, #041f17 100%);
+  color: #d1fae5;
+  border-bottom: 1px solid rgba(16, 185, 129, 0.25);
+  font-family: var(--font-sans);
+  overflow: hidden;
+  user-select: none;
+}
+
+.ticker-wrap {
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+}
+
+.ticker-move {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation: tickerScroll 42s linear infinite;
+}
+
+.ticker-move:hover {
+  animation-play-state: paused;
+}
+
+@keyframes tickerScroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
